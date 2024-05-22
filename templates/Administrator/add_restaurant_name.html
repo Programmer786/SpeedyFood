@@ -1,0 +1,131 @@
+{% extends "Administrator/_Layout.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+<h1 class="page-header">
+    Restaurant <small>This page is exclusively used for add new records of Restaurant & Details ...</small>
+    <button type="button" style="float:right;" class="btn btn-theme btn-lg d-block fw-500" data-bs-toggle="modal" data-bs-target="#addNewRestaurantModal">Add New Restaurant</button>
+</h1>
+<hr class="mb-4">
+
+<!-- Start Modal for Add New Restaurant -->
+<div class="modal fade" id="addNewRestaurantModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- START #Form to Add Restaurant -->
+            <form action="/add_restaurant_name" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Restaurant Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleInputRD" style="color: black;"><b>Province *</b></label>
+                        <select class="form-control" name="restaurant_province_sno" id="province-dropdown" required>
+                            {% for province in provinces %}
+                            <option value="{{ province.province_sno }}">{{ province.province_name }}</option>
+                            {% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group mt-3">
+                        <label for="exampleInputRD" style="color: black;"><b>District *</b></label>
+                        <select class="form-control" name="restaurant_district_sno" id="district-dropdown" required>
+                            <option value="None" disabled selected>None</option>
+                        </select>
+                     </div>
+                     <div class="form-group mt-3">
+                        <label for="RestaurantName" style="color: black;"><b>Restaurant Name</b></label>
+                        <input type="text" class="form-control" name="restaurant_name" placeholder="Restaurant Name" id="RestaurantNames" required/>
+                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Restaurant</button>
+                </div>
+            </form>
+            <!--END #Form to Add Restaurant -->
+        </div>
+    </div>
+</div>
+<!-- End Modal for Add New Restaurant -->
+
+<div class="card border-theme bg-theme bg-opacity-25 mb-5">
+    <div class="card-header border-theme bg-theme bg-opacity-25 fw-bold small text-body"><a style="font-size: 20px;">ALL RESTAURANT RECORD</a></div>
+    <!-- BEGIN #datatable -->
+    <div id="datatable" class="mb-1">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatableDefault" class="table text-nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>S.No#</th>
+                            <th>Restaurant</th>
+                            <th>District</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                        {% for restaurant in restaurant_names_data_retrieve %}
+                           <tr>
+                              <td>{{loop.index}}</td>
+                              <td>{{restaurant.restaurant_name}}</td>
+                              <td>{{restaurant.district.district_name }}</td>
+                              <td>
+                                 <a href="#" data-bs-toggle="modal" data-bs-target="#updateRestaurantModal{{ restaurant.restaurant_id }}" class="btn btn-success btn-circle btn-sm"><i class="fa fa-edit"></i></a></a>
+                             </td>
+                              <td><a class="btn btn-danger btn-circle btn-sm" href="{{url_for('delete_restaurant', Restaurant_Id=restaurant.restaurant_id)}}"><i class="fa fa-trash"></i></a></td>
+                           </tr>
+                            <!-- Add a modal for update Restaurant -->
+                            <div class="modal fade" id="updateRestaurantModal{{ restaurant.restaurant_id }}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <!-- START #Form to Update Restaurant -->
+                                        <form action="{{ url_for('update_restaurant', Restaurant_Id=restaurant.restaurant_id) }}" method="post">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Update Restaurant</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="exampleInputRD" style="color: black;"><b>Province *</b></label>
+                                                    <select class="form-control" name="restaurant_province_sno" id="province-second-dropdown" required>
+                                                       <option value="{{ restaurant.district.province.province_sno }}" style="background-color: rgb(0, 255, 17);" selected>{{ restaurant.district.province.province_name }}</option>
+                                                       {% for province in provinces %}
+                                                          <option value="{{ province.province_sno }}">{{ province.province_name }}</option>
+                                                       {% endfor %}
+                                                    </select>
+                                                 </div>
+                                                 <div class="form-group mt-3">
+                                                    <label for="exampleInputRD" style="color: black;"><b>District *</b></label>
+                                                    <select class="form-control" name="restaurant_district_sno" id="district-second-dropdown" required>
+                                                       <option value="{{ restaurant.restaurant_district_sno }}" style="background-color: rgb(0, 255, 17);" selected>{{ restaurant.district.district_name }}</option>
+                                                    </select>
+                                                 </div>
+                                                 <div class="form-group mt-3">
+                                                      <label for="RestaurantName" style="color: black;"><b>Restaurant Name</b></label>
+                                                      <input type="text" class="form-control" name="restaurant_name" value="{{ restaurant.restaurant_name }}" placeholder="Restaurant Name" id="RestaurantName" required/>
+                                                  </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Update Restaurant</button>
+                                            </div>
+                                        </form>
+                                        <!--END #Form to Add Restaurant -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Add a modal for selecting multiple Restaurant -->
+                        {% endfor %}
+                    </tbody>
+                 </table>
+            </div>
+        </div>
+    </div>
+    <!-- END #datatable -->
+</div>
+
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

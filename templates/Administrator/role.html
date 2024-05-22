@@ -1,0 +1,330 @@
+{% extends "Administrator/_Layout.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+<h1 class="page-header">
+    MANAGERS <small>This page is exclusively used for managing records of managers...</small>
+    <button type="button" style="float:right;" class="btn btn-theme btn-lg d-block fw-500" data-bs-toggle="modal" data-bs-target="#addNewAdministratorModal">Add New Manager</button>
+</h1>
+<hr class="mb-4">
+
+<!-- Start Modal for Add New Administrator -->
+<div class="modal fade" id="addNewAdministratorModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- START #Form to Add Manager -->
+            <form action="/role" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Manager For Specific Restaurant Branch</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="exampleInputRD" style="color: black;"><b>Select Restaurant Name *</b></label>
+                            <select class="form-control" name="get_restaurant_id" required>
+                                {% for one_restaurant in all_restaurant_data_retrieve %}
+                                <option value="{{ one_restaurant.restaurant_id  }}">{{ one_restaurant.restaurant_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="exampleInputRD" style="color: black;"><b>UserName *</b></label>
+                            <input type="text" class="form-control" name="user_name" placeholder="UserName" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputRD" style="color: black;"><b>Full Name *</b></label>
+                            <input type="text" class="form-control" name="full_name" placeholder="Manager Full Name" required/>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                         <div class="col-md-6">
+                            <label for="exampleInputRD" style="color: black;"><b>Email *</b></label>
+                            <input type="email" class="form-control" name="email" placeholder="forexample@gmail.com" required/>
+                         </div>
+                         <div class="col-md-6">
+                            <label for="exampleInputRD" style="color: black;"><b>CNIC *</b></label>
+                            <input type="text" class="form-control" name="cnic" placeholder="11101xxxxxxx3" onkeypress="return onlyNumberKey(event)" maxlength="13" required/>
+                         </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                           <label for="exampleInputRD" style="color: black;"><b>Phone No *</b></label>
+                           <input type="text" class="form-control" name="phone" placeholder="03xxxxxxxxx" onkeypress="return onlyNumberKey(event)" maxlength="11" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputRD" style="color: black;"><b>Gender *</b></label>
+                            <select name="gender" class="form-control" required>
+                               <option value="Male" selected>Male</option>
+                               <option value="Female">Female</option>
+                            </select>
+                         </div>
+                   </div>
+                   <div class="row mt-3">
+                       <div class="col-md-6">
+                           <label for="exampleInputRD" style="color: black;"><b>Password *</b></label>
+                           <input type="password" class="form-control" name="password" placeholder="************" required />
+                       </div>
+                       <div class="col-md-6">
+                           <label for="exampleInputRD" style="color: black;"><b>Conform Password *</b></label>
+                           <input type="password" class="form-control" name="conform_password" placeholder="************" required />
+                       </div>
+                   </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Manager</button>
+                </div>
+            </form>
+            <!--END #Form to Add Manager -->
+        </div>
+    </div>
+</div>
+<!-- End Modal for Add New Administrator -->
+
+<div class="card border-theme bg-theme bg-opacity-25 mb-5">
+    <div class="card-header border-theme bg-theme bg-opacity-25 fw-bold small text-body"><a style="font-size: 20px;">ALL MANAGERS RECORD</a></div>
+    <!-- BEGIN #datatable -->
+    <div id="datatable" class="mb-1">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatableDefault" class="table text-nowrap w-100">
+                    <thead>
+                       <tr>
+                          <th>RoleId#</th>
+                          <th>UserName</th>
+                          <th>Full Name</th>
+                          <th>Restaurant Name</th>
+                          <th>Date</th>
+                          <th>Role_Description</th>
+                          <th>CNIC</th>
+                          <th>Phone</th>
+                          <th>Gender</th>
+                          <th>Edit</th>
+                          <th>Change Password</th>
+                          <th>Disable / Enable</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                    {% for role in role_with_Cnic_data %}
+                       <!-- this is for application admin -->
+                       {% if session.rol_name == 'Administrator' %} 
+                       <tr>
+                          <td>{{loop.index}}</td>
+                          <td>{{role.user_name}}</td>
+                          <td>{{role.full_name}}</td>
+                          <td>{{role.restaurant_names.restaurant_name}}</td>
+                          <td>{{role.registrationDate}}</td>
+                          <td>{{role.rol_name}}</td>
+                          <td>{{role.cnic}}</td>
+                          <td>{{role.phone}}</td>
+                          <td>{{role.gender}}</td>
+                          <td>
+                             <a href="#" data-bs-toggle="modal" data-bs-target="#updateManagerModal{{ role.idUsers }}" class="btn btn-success btn-circle btn-sm">
+                                <i class="fa fa-edit"></i>
+                             </a>
+                          </td>
+                          <td>
+                             <a href="#" data-bs-toggle="modal" data-bs-target="#changePassManagerModal{{ role.idUsers }}" class="btn btn-primary btn-circle btn-sm">
+                                <i class="fa fa-edit"> Password</i>
+                             </a>
+                          </td>
+                          <td>
+                             {% if role.isActive == 1 %}
+                             <a href="{{url_for('disable_role_user', UserId=role.idUsers)}}" class="btn btn-danger btn-circle btn-sm">
+                                <i class="fa fa-trash"> Disable Now</i>
+                             </a>
+                             {% else %}
+                             <a href="{{url_for('enable_role_user', UserId=role.idUsers)}}" class="btn btn-success btn-circle btn-sm">
+                                <i class="fa fa-handshake"> Enable Now</i>
+                             </a>
+                             {% endif %}
+                          </td>
+                       </tr>
+                       <!-- this is for office admin -->
+                    {% elif role.rol_name == 'Manager' %}
+                            <tr>
+                                <td>{{loop.index}}</td>
+                                <td>{{role.user_name}}</td>
+                                <td>{{role.full_name}}</td>
+                                <td>{{role.restaurant_names.restaurant_name}}</td>
+                                <td>{{role.registrationDate}}</td>
+                                <td>{{role.rol_name}}</td>
+                                <td>{{role.cnic}}</td>
+                                <td>{{role.phone}}</td>
+                                <td>{{role.gender}}</td>
+                            {% if session.cnic == role.cnic and role.rol_name == "Manager" %}
+                                <td>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#updateManagerModal{{ role.idUsers }}" class="btn btn-success btn-circle btn-sm">
+                                    <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#changePassManagerModal{{ role.idUsers }}" class="btn btn-primary btn-circle btn-sm">
+                                    <i class="fa fa-edit"> Password</i>
+                                    </a>
+                                </td>
+                                <td>
+                                {% if role.isActive == 1 %}
+                                    <a href="{{url_for('disable_role_user', UserId=role.idUsers)}}" class="btn btn-danger btn-circle btn-sm">
+                                    <i class="fa fa-trash"> Disable Now</i>
+                                    </a>
+                                {% else %}
+                                    <a href="{{url_for('enable_role_user', UserId=role.idUsers)}}" class="btn btn-success btn-circle btn-sm">
+                                    <i class="fa fa-handshake"> Enable Now</i>
+                                    </a>
+                                {% endif %}
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#updateManagerModal{{ role.idUsers }}" class="btn btn-success btn-circle btn-sm disabled" tabindex="-1" role="button" aria-disabled="true">
+                                    <i class="fa fa-edit"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#changePassManagerModal{{ role.idUsers }}" class="btn btn-primary btn-circle btn-sm disabled" tabindex="-1" role="button" aria-disabled="true">
+                                    <i class="fa fa-edit"> Password</i>
+                                    </a>
+                                </td>
+                                <td>
+                                {% if role.isActive == 1 %}
+                                    <a href="#" class="btn btn-danger btn-circle btn-sm disabled" tabindex="-1" role="button" aria-disabled="true">
+                                    <i class="fa fa-trash"> Disable Now</i>
+                                    </a>
+                                {% else %}
+                                    <a href="#" class="btn btn-success btn-circle btn-sm disabled" tabindex="-1" role="button" aria-disabled="true">
+                                    <i class="fa fa-handshake"> Enable Now</i>
+                                    </a>
+                                {% endif %}
+                                </td>
+                            {% endif %}
+                            </tr>
+                    {% endif %}
+                       
+                        <!-- Add a modal for Update New Manager -->
+                        <div class="modal fade" id="updateManagerModal{{ role.idUsers }}">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <!-- START #Form to Add Manager -->
+                                    <form action="{{url_for('user_for_update', UserId=role.idUsers)}}" method="post">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Update Manager</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="exampleInputRD" style="color: black;"><b>Select Restaurant *</b></label>
+                                                <select class="form-control" name="get_restaurant_id" required>
+                                                    <option value="{{ role.restaurant_names.restaurant_id }}" style="background-color: rgb(0, 255, 17);" selected>{{ role.restaurant_names.restaurant_name }}</option>
+                                                  {% for one_restaurant in all_restaurant_data_retrieve %}
+                                                     <option value="{{ one_restaurant.restaurant_id  }}">{{ one_restaurant.restaurant_name }}</option>
+                                                  {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>UserName *</b></label>
+                                                <input type="text" class="form-control" name="user_name" value="{{role.user_name}}" placeholder="UserName" required/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>Full Name *</b></label>
+                                                <input type="text" class="form-control" name="full_name" value="{{role.full_name}}" placeholder="Manager Full Name" required/>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>Email *</b></label>
+                                                <input type="email" class="form-control" name="email" value="{{role.email}}" placeholder="forexample@gmail.com" required/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>CNIC *</b></label>
+                                                <input type="text" class="form-control" name="cnic" value="{{role.cnic}}" placeholder="11101xxxxxxx3" onkeypress="return onlyNumberKey(event)" maxlength="13" required/>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                                <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>Phone No *</b></label>
+                                                <input type="text" class="form-control" name="phone" value="{{role.phone}}" placeholder="03xxxxxxxxx" onkeypress="return onlyNumberKey(event)" maxlength="11" required/>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="exampleInputRD" style="color: black;"><b>Gender *</b></label>
+                                                    <select name="gender" class="form-control" required>
+                                                    <option value="{{ role.gender }}" style="background-color: rgb(0, 255, 17);" selected>{{ role.gender }}</option>
+                                                    <option value="Male" selected>Male</option>
+                                                    <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>Password *</b></label>
+                                                <input type="password" class="form-control" name="password" placeholder="************" required />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="exampleInputRD" style="color: black;"><b>Conform Password *</b></label>
+                                                <input type="password" class="form-control" name="conform_password" placeholder="************" required />
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update Manager</button>
+                                        </div>
+                                    </form>
+                                    <!--END #Form to Add Manager -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal for Update New Manager -->
+
+                        <!-- Add a modal for Update Password -->
+                        <div class="modal fade" id="changePassManagerModal{{ role.idUsers }}">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <!-- START #Form to Add Manager -->
+                                    <form action="{{url_for('change_password', UserId=role.idUsers)}}" method="post">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Change Password</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="exampleInputRD" style="color: black;"><b>Password *</b></label>
+                                                    <input type="password" class="form-control" name="password" placeholder="************" required />
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    <label for="exampleInputRD" style="color: black;"><b>Conform Password *</b></label>
+                                                    <input type="password" class="form-control" name="conform_password" placeholder="************" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Change Password</button>
+                                        </div>
+                                    </form>
+                                    <!--END #Form to Add Manager -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal for Update Password -->
+
+                    {% endfor %}
+                    </tbody>
+                 </table>
+            </div>
+        </div>
+    </div>
+    <!-- END #datatable -->
+</div>
+
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

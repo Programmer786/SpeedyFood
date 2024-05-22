@@ -1,0 +1,102 @@
+{% extends "Administrator/_Layout.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+<h1 class="page-header">
+    Product Category <small>This page is exclusively used for add new records of Product Category & Details ...</small>
+    <button type="button" style="float:right;" class="btn btn-theme btn-lg d-block fw-500" data-bs-toggle="modal" data-bs-target="#addNewProductCategoryModal">Add New Product Category</button>
+</h1>
+<hr class="mb-4">
+
+<!-- Start Modal for Add New Administrator -->
+<div class="modal fade" id="addNewProductCategoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- START #Form to Add Manager -->
+            <form action="/add_product_category" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Product Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                     <div class="form-group mt-3">
+                        <label for="exampleInputRD" style="color: black;"><b>Product Category Name</b></label>
+                        <input type="text" class="form-control" name="product_category_name" placeholder="Product Category Name" required/>
+                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add New Category</button>
+                </div>
+            </form>
+            <!--END #Form to Add Manager -->
+        </div>
+    </div>
+</div>
+<!-- End Modal for Add New Administrator -->
+
+<div class="card border-theme bg-theme bg-opacity-25 mb-5">
+    <div class="card-header border-theme bg-theme bg-opacity-25 fw-bold small text-body"><a style="font-size: 20px;">ALL PRODUCT CATEGORY RECORD</a></div>
+    <!-- BEGIN #datatable -->
+    <div id="datatable" class="mb-1">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatableDefault" class="table text-nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>S.No#</th>
+                            <th>Product Category</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                        {% for p_category in product_category_data_retrieve %}
+                           <tr class="district-row">
+                              <td>{{p_category.pc_id}}</td>
+                              <td>{{p_category.pc_name}}</td>
+                              <td>
+                                 <a href="#" data-bs-toggle="modal" data-bs-target="#updateProductCategoryModal{{ p_category.pc_id }}" class="btn btn-success btn-circle btn-md">
+                                    <i class="fa fa-edit"></i></a>
+                              </td>
+                              <td><a class="btn btn-danger btn-circle btn-md" href="{{url_for('delete_product_category', Product_Category_Id=p_category.pc_id)}}"><i class="fa fa-trash"></i></a></td>
+                           </tr>
+
+                           <!-- Add a modal for Update Product Category -->
+                           <div class="modal fade" id="updateProductCategoryModal{{ p_category.pc_id }}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <!-- START #Form to Update Product Category -->
+                                        <form action="{{url_for('update_product_category', Product_Category_Id=p_category.pc_id)}}" method="post">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Update Product Category Name</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                 <div class="form-group">
+                                                    <label for="exampleInputRD" style="color: black;"><b>Product Category</b></label>
+                                                    <input type="text" class="form-control" name="product_category_name" placeholder="Product Category Name" value="{{ p_category.pc_name }}" required/>
+                                                 </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Update Product Category</button>
+                                            </div>
+                                        </form>
+                                        <!--END #Form to Update Product Category -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Modal for Update Product Category -->
+                        {% endfor %}
+                     </tbody>
+                 </table>
+            </div>
+        </div>
+    </div>
+    <!-- END #datatable -->
+</div>
+
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

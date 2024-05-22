@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Speedy Food</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- ================== BEGIN core-css ================== -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.min.css') }}" type="text/css" />
+	<!-- ================== END core-css ================== -->
+	
+</head>
+<body>
+	<!-- BEGIN #app -->
+	<div id="app" class="app app-full-height app-without-header">
+		{% block body %}
+			<!-- Put Work/Task Area container-fluid inner -->
+		{% endblock %}
+
+		<!-- BEGIN btn-scroll-top -->
+		<a href="#" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
+		<!-- END btn-scroll-top -->
+	</div>
+	<!-- END #app -->
+
+	<!-- ================== BEGIN core-js ================== -->
+	<script src="{{ url_for('static', filename='js/vendor.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/app.min.js') }}"></script>
+	<!-- ================== END core-js ================== -->
+
+	<!--  Only ASCII character in that range allowed -->
+	<script>
+		function onlyNumberKey(evt) {
+			
+			// Only ASCII character in that range allowed
+			var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+			if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+				return false;
+			return true;
+		}
+	</script>
+	<!-- ================== End #Only ASCII character in that range allowed" ================== -->
+
+	<!-- ================== Start #username cannot allowed space " ================== -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			// Get the input field for the username
+			var usernameInput = document.querySelector('input[name="user_name"]');
+	
+			// Add an event listener to the input field to check for spaces
+			usernameInput.addEventListener('input', function() {
+				var username = this.value;
+				// Check if username contains spaces
+				if (username.includes(' ')) {
+					// Display an alert message
+					alert("Error! Username cannot contain spaces.");
+					// Clear the input field
+					this.value = '';
+				}
+			});
+		});
+	</script>
+	<!-- ================== End #username cannot allowed space" ================== -->
+
+</body>
+
+</html>

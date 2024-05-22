@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Speedy Food</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+	<!-- ================== BEGIN core-css ================== -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" type="text/css" />
+	<!-- ================== END core-css ================== -->
+	<!-- ================== BEGIN page-css ================== -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-table/dist/bootstrap-table.min.css') }}" type="text/css" />
+	
+	<script>
+		$('.menu-item').on('click', function () {
+			console.log('Menu item clicked');
+			$('.menu-item').removeClass('active');
+			$(this).addClass('active');
+		});
+	</script>
+	<!-- ================== END page-css ================== -->
+</head>
+
+<body>
+	<!-- BEGIN #app -->
+	<div id="app" class="app">
+		<!-- BEGIN #header -->
+		{% include "Administrator/_Header.html" %}
+		<!-- END #header -->
+
+		<!-- BEGIN #sidebar -->
+		{% include "Administrator/_Sidebar.html" %}
+		<!-- END #sidebar -->
+
+		<!-- BEGIN #content -->
+		<div id="content" class="app-content">
+			<!-- BEGIN Message-Show -->
+			{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				{% for category, message in messages %}
+					<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+						<strong>{{ category|capitalize }}!</strong> {{ message|capitalize }}.
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				{% endfor %}
+			{% endif %}
+			{% endwith %}
+			<!-- End Message-Show -->
+			
+			{% block body %}
+			<!-- Put Work/Task Area container-fluid inner -->
+			{% endblock %}
+		</div>
+		<!-- END #content -->
+
+		<!-- BEGIN #footer -->
+		{% include "Administrator/_Footer.html" %}
+		<!-- END #footer -->
+
+		<!-- BEGIN btn-scroll-top -->
+		<a href="#" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
+		<!-- END btn-scroll-top -->
+
+		<!-- BEGIN theme-panel -->
+		{% include "Administrator/_ThemePanel.html" %}
+		<!-- END theme-panel -->
+	</div>
+	<!-- END #app -->
+
+	<!-- ================== BEGIN core-js ================== -->
+	<script src="{{ url_for('static', filename='js/vendor.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/app.min.js') }}"></script>
+	<!-- ================== END core-js ================== -->
+	<!-- ================== BEGIN dropdown list for province, district-js ================== -->
+	<script src="{{ url_for('static', filename='js/dropdown_province.js') }}"></script>
+	<!-- ================== BEGIN dropdown list for province, district-js ================== -->
+	<!-- ================== BEGIN For Image in thumbnail image-js ================== -->
+	<script src="{{ url_for('static', filename='js/image_show.js') }}"></script>
+	<!-- ================== BEGIN Image in thumbnail image-js ================== -->
+	<!-- ================== BEGIN page-js ================== -->
+	<script src="{{ url_for('static', filename='plugins/@highlightjs/cdn-assets/highlight.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/demo/highlightjs.demo.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/bootstrap-table/dist/bootstrap-table.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/demo/table-plugins.demo.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/demo/sidebar-scrollspy.demo.js') }}"></script>
+	<!-- ================== END page-js ================== -->
+	<!-- ================== BEGIN page-js ================== -->
+	<script src="{{ url_for('static', filename='js/demo/pos-menu-stock.demo.js') }}"></script>
+	<!-- ================== END page-js ================== -->
+	<!-- ================== Start #Only ASCII character in that range allowed" ================== -->
+	<script>
+		function onlyNumberKey(evt) {
+			// Only ASCII character in that range allowed
+			var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+			if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+				return false;
+			return true;
+		}
+	</script>
+	<!-- ================== End #Only ASCII character in that range allowed" ================== -->
+
+</body>
+
+</html>

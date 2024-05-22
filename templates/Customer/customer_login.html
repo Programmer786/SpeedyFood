@@ -1,0 +1,64 @@
+{% extends "Customer/_Layout_Auth.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+	<!-- BEGIN login -->
+	<div class="login">
+		<!-- BEGIN login-content -->
+		<div class="login-content">
+			<!-- BEGIN Message-Show -->
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+							<strong>{{ category|capitalize }}!</strong> {{ message|capitalize }}.
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+			<!-- End Message-Show -->
+			<div class="">
+				<div class="card border-theme bg-gray-600 bg-opacity-5 mb-3">
+					<div class="card-header border-theme bg-gray-600 bg-opacity-5 fw-bold small text-body">
+						<h1 class="text-center">Customer Sign In <i class="fas fa-lg fa-fw me-2 fa-utensils"></i></h1>
+						<div class="text-muted text-center mb-4">
+							For your protection, please verify your identity.
+						</div>
+					</div>
+					<div class="card-body">
+						<form action="/cust_login" method="POST">
+							<div class="mb-3">
+								<label class="form-label">UserName</label>
+								<input type="text" name="user_name" class="form-control form-control-lg fs-15px" placeholder="e.g AqsaMustafa786" required>
+							</div>
+							<div class="mb-3">
+								<div class="d-flex">
+									<label class="form-label">Password</label>
+								</div>
+								<input type="password" name="login_password" class="form-control form-control-lg fs-15px"	placeholder="Enter your password" required>
+							</div>
+							<button type="submit" class="btn btn-theme btn-lg d-block w-100 fw-500 mb-3">Sign In <i
+									class="fas fa-lg fa-fw me-2 fa-sign-in-alt"></i>
+							</button>
+							<div class="text-center text-muted">
+								GOTO Dashboard? <a href="/">Dashboard</a>.
+							</div>
+							<div class="text-center text-muted">
+								Don't have an account yet? <a href="/cust_register">Sign up</a>.
+							</div>
+							<div class="text-center text-muted">
+								Are you want to login Admin? <a href="/admin_login">Admin Login</a>.
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END login-content -->
+	</div>
+	<!-- END login -->
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->
+		

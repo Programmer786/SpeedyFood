@@ -1,0 +1,78 @@
+{% extends "Administrator/_Layout.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+<h1 class="page-header">
+    Dashboard <small>page header description goes here...</small>
+</h1>
+<hr class="mb-4">
+
+
+<!-- Small boxes (Stat box) -->
+<div class="row">
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3>2</h3>
+
+          <p>Total Project</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-bag"></i>
+        </div>
+        <a href="/project_details" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>2</h3>
+
+          <p>Total Employee</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-person-stalker"></i>
+        </div>
+        <a href="/add_employee" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>3<sup style="font-size: 20px"> PKR</sup></h3>
+
+          <p>Today Expense</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-stats-bars"></i>
+        </div>
+        <a href="/show_all_expanse_details" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>2<sup style="font-size: 20px"> PKR</sup></h3>
+
+          <p>Total Expense </p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-pie-graph"></i>
+        </div>
+        <a href="/show_all_expanse_details" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+</div>
+<!-- /.row -->
+
+
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

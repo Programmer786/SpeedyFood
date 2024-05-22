@@ -1,0 +1,170 @@
+{% extends "Administrator/_Layout.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+<h1 class="page-header">
+    Product Stock <small>This page is exclusively used for add new records of Product Stock Update & Details ...</small>
+    <button type="button" style="float:right;" class="btn btn-theme btn-lg d-block fw-500" data-bs-toggle="modal"
+        data-bs-target="#addNewProductModal">Add New Product</button>
+</h1>
+<hr class="mb-4">
+
+<!-- Start Modal for Add New Product -->
+<div class="modal fade" id="addNewProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- START #Form to Add Product -->
+            <form action="/add_product" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    {% if session.rol_name == 'Administrator' %}
+                    <div class="form-group">
+                        <label for="product_restaurant_name" style="color: black;"><b>Select Restaurant Name</b></label>
+                        <select class="form-control" name="get_restaurant_id" id="restaurant_name" required>
+                            {% for one_restaurant in all_restaurant__name %}
+                            <option value="{{ one_restaurant.restaurant_id  }}">{{ one_restaurant.restaurant_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    <div class="form-group mt-2">
+                        <label for="product_name" style="color: black;"><b>Product Name</b></label>
+                        <input type="text" class="form-control" name="p_name" id="product_name"
+                            placeholder="Product Name" required />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="product_description" style="color: black;"><b>Product Description</b></label>
+                        <textarea class="form-control" name="p_description" id="product_description"
+                            placeholder="Product Description"></textarea>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="product_price" style="color: black;"><b>Product Price</b></label>
+                        <input type="number" step="0.01" class="form-control" name="p_price" min="0" id="product_price"
+                            placeholder="Product Price" required />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="product_category" style="color: black;"><b>Product Category</b></label>
+                        <select class="form-control" name="get_category_id" id="product_category" required>
+                            {% for one_p_category in all_product_category_name %}
+                            <option value="{{ one_p_category.pc_id }}">{{ one_p_category.pc_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="product_image" style="color: black;"><b>Product Image URL</b></label>
+                        <input type="file" class="form-control" name="p_image" id="product_image" accept=".jpg, .jpeg"
+                            required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add New Product</button>
+                </div>
+            </form>
+            <!--END #Form to Add Product -->
+        </div>
+    </div>
+</div>
+<!-- End Modal for Add New Product -->
+
+
+
+<div class="card border-theme bg-theme bg-opacity-25 mb-5">
+    <div class="card-header border-theme bg-theme bg-opacity-25 fw-bold small text-body"><a style="font-size: 20px;">ALL
+            PRODUCT STOCK RECORD</a></div>
+    <!-- BEGIN pos -->
+    <div class="pos pos-vertical" id="pos">
+        <!-- BEGIN pos-container -->
+        <div class="pos-container">
+            <!-- BEGIN pos-content -->
+            <div class="pos-content">
+                <div class="pos-content-container p-3">
+                    <div class="row gx-3">
+                    {% for product in all_products_data_retrieve %}
+                        {% if session.rol_name == 'Administrator' %}
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 pb-3">
+                            <div class="pos-product">
+                                <form action="{{url_for('update_product_stock_active', Product_Id=product.p_id)}}" method="post">
+                                    <div class="img" style="background-image: url({{ url_for('static', filename='uploaded_files/' + product.p_image) }})"></div>
+                                    <div class="info">
+                                        <div class="title text-truncate">{{product.p_name}}&reg;</div>
+                                        <div class="desc text-truncate">{{product.p_description}}</div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="w-100px">Stock:</div>
+                                            <div class="flex-1">
+                                                <input type="number" name="p_stock" class="form-control" min="0" value="{{product.p_stock}}">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="w-100px">Availability:</div>
+                                            <div class="flex-1">
+                                                <div class="form-check form-switch">
+                                                    {% if product.p_isActive == 1 %}
+                                                    <input class="form-check-input" type="checkbox" name="p_isActive" id="product1" checked>
+                                                    {% else %}
+                                                    <input class="form-check-input" type="checkbox" name="p_isActive" id="product1">
+                                                    {% endif %}
+                                                    <label class="form-check-label" for="product1"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="submit" style="width: 100%;" class="btn btn-theme fw-semibold d-block mb-2">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% elif session.restaurant_id == product.restaurant_names.restaurant_id %}
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 pb-3">
+                            <div class="pos-product">
+                                <form action="{{url_for('update_product_stock_active', Product_Id=product.p_id)}}" method="post">
+                                    <div class="img" style="background-image: url({{ url_for('static', filename='uploaded_files/' + product.p_image) }})"></div>
+                                    <div class="info">
+                                        <div class="title text-truncate">{{product.p_name}}&reg;</div>
+                                        <div class="desc text-truncate">{{product.p_description}}</div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="w-100px">Stock:</div>
+                                            <div class="flex-1">
+                                                <input type="number" name="p_stock" class="form-control" min="0" value="{{product.p_stock}}">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="w-100px">Availability:</div>
+                                            <div class="flex-1">
+                                                <div class="form-check form-switch">
+                                                    {% if product.p_isActive == 1 %}
+                                                    <input class="form-check-input" type="checkbox" name="p_isActive" id="product1" checked>
+                                                    {% else %}
+                                                    <input class="form-check-input" type="checkbox" name="p_isActive" id="product1">
+                                                    {% endif %}
+                                                    <label class="form-check-label" for="product1"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="submit" style="width: 100%;" class="btn btn-theme fw-semibold d-block mb-2">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!-- END pos-content -->
+        </div>
+        <!-- END pos-container -->
+    </div>
+    <!-- END pos -->
+</div>
+
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

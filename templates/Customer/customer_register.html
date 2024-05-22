@@ -1,0 +1,79 @@
+{% extends "Customer/_Layout_Auth.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+		<!-- BEGIN register -->
+		<div class="register">
+			<!-- BEGIN register-content -->
+			<div class="register-content">
+				<!-- BEGIN Message-Show -->
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+								<strong>{{ category|capitalize }}!</strong> {{ message|capitalize }}.
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+				<!-- End Message-Show -->
+				<div class="">
+					<div class="card border-theme bg-gray-600 bg-opacity-5 mb-3">
+						<div class="card-header border-theme bg-gray-600 bg-opacity-5 fw-bold small text-body">
+							<h1 class="text-center">Registration <i class="fas fa-lg fa-fw me-2 fa-utensils"></i></h1>
+							<div class="text-muted text-center mb-4">
+								For your protection, please create your identity.
+							</div>
+						</div>
+						<div class="card-body">
+							<form action="/cust_register" method="POST">
+								<h1 class="text-center">Sign Up</h1>
+								<div class="mb-3">
+									<label class="form-label">Full Name <span class="text-danger">*</span></label>
+									<input type="text" name="full_name" class="form-control form-control-lg fs-15px" placeholder="e.g John Smith" required>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Contact Number <span class="text-danger">*</span></label>
+									<input type="text" name="phone_number" class="form-control form-control-lg fs-15px" placeholder="e.g 03001234567" onkeypress="return onlyNumberKey(event)" maxlength="11" required>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Gender <span class="text-danger">*</span></label>
+									<select class="form-control form-control-lg fs-15px" name="gender" required>
+										<option value="Male" selected>Male</option>
+										<option value="Female">Female</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">UserName <span class="text-danger">*</span></label>
+									<input type="text" name="user_name" class="form-control form-control-lg fs-15px" placeholder="e.g AqsaMustafa786" required>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Password <span class="text-danger">*</span></label>
+									<input type="password" name="password" class="form-control form-control-lg fs-15px" required>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+									<input type="password" name="conform_password" class="form-control form-control-lg fs-15px" required>
+								</div>
+								
+								<div class="mb-3">
+									<button type="submit" class="btn btn-theme btn-lg fs-15px fw-500 d-block w-100">Sign Up</button>
+								</div>
+								<div class="text-center text-muted">
+									GOTO Dashboard? <a href="/">Dashboard</a>.
+								</div>
+								<div class="text-muted text-center">
+									Already have an Admin ID? <a href="/cust_login">Sign In</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END register-content -->
+		</div>
+		<!-- END register -->
+		
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

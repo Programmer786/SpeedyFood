@@ -1,0 +1,54 @@
+<!-- BEGIN #header -->
+<div id="header" class="app-header">
+	<!-- BEGIN brand -->
+	<div class="brand">
+		<h2 style="font-weight: bold;" class="brand-logo">
+		{% if session.rol_name %}
+			{{ session.rol_name }}
+		{% else %}
+			<a href="/">SpeedyFood</a>
+		{% endif %}
+		</h2>
+	</div>
+	<!-- END brand -->
+
+	<!-- BEGIN menu -->
+	<div class="menu">
+		<div class="menu-search">
+			<div class="menu-search-icon"><i class="fa fa-search"></i></div>
+			<div class="menu-search-input">
+				<input type="text" class="form-control" id="searchInput" placeholder="Search menu...">
+			</div>
+		</div>
+		<div class="menu-item dropdown">
+			<a href="#" data-bs-toggle="dropdown" data-display="static" class="menu-link">
+				<div class="menu-img online">
+					<!-- <a class="ms-100 mh-100 rounded-circle">
+						<i class="fa fa-fw fa-angle-double-down"></i>
+					</a> -->
+					<img src="{{ url_for('static', filename='img/user/down_arrow.jpg') }}" class="ms-100 mh-100 rounded-circle" alt="Profile Picture">
+				</div>
+				<div class="menu-text">{{ session.Cust_FullName }}</div>
+			</a>
+			<div class="dropdown-menu dropdown-menu-end me-lg-3">
+				{% if session.cust_RolName %}
+				<a class="dropdown-item d-flex align-items-center" href="{{url_for('update_customer_profile', CustId=session.Cust_Id)}}">Edit Profile <i class="fa fa-user-circle fa-fw ms-auto text-body text-opacity-50"></i></a>
+				<!-- <a class="dropdown-item d-flex align-items-center" href="#">Change Password  <i class="fa fa-wrench fa-fw ms-auto text-body text-opacity-50"></i></a> -->
+				<!-- <a class="dropdown-item d-flex align-items-center" href="email_inbox.html">Inbox <i class="fa fa-envelope fa-fw ms-auto text-body text-opacity-50"></i></a> -->
+				<!-- <a class="dropdown-item d-flex align-items-center" href="calendar.html">Verification <i class="fa fa-calendar-alt fa-fw ms-auto text-body text-opacity-50"></i></a> -->
+				{% endif %}
+				<div class="dropdown-divider"></div>
+				{% if session.cust_RolName %}
+					<a class="dropdown-item d-flex align-items-center" href="/cust_logout">Log Out <i class="fa fa-sign-out-alt fa-fw ms-auto text-body text-opacity-50"></i></a>
+				{% else %}
+					<a class="dropdown-item d-flex align-items-center" href="/cust_login">Login <i class="fa fa-sign-in-alt fa-fw ms-auto text-body text-opacity-50"></i></a>
+				{% endif %}
+				
+			</div>
+		</div>
+		
+	</div>
+	<!-- END menu -->
+
+</div>
+<!-- END #header -->

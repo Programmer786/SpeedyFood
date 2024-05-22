@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Speedy Food | POS - Customer Order System</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<!-- ================== BEGIN core-css ================== -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" type="text/css" />
+	<!-- ================== END core-css ================== -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" type="text/css" />
+	
+	
+</head>
+<body class='pace-top'>
+	<!-- BEGIN #app -->
+	<div id="app" class="app app-content-full-height app-without-sidebar">
+		<!-- BEGIN #header -->
+		{% include "Customer/_Header.html" %}
+		<!-- END #header -->
+		
+		<!-- BEGIN #content -->
+		<div id="content" class="app-content p-0">
+			<!-- BEGIN pos -->
+			<div class="pos pos-with-menu pos-with-sidebar" id="pos">
+				<div class="pos-container">
+					<!-- BEGIN pos-menu-sidebar -->
+					<div class="pos-menu">
+						<!-- BEGIN logo -->
+						<div class="logo">
+							<!-- <div class="logo-img"><i class="fa fa-utensils"></i></div> -->
+						</div>
+						<!-- END logo -->
+						<!-- BEGIN nav-container -->
+						<div class="nav-container">
+							<div class="h-100" data-scrollbar="true" data-skip-mobile="true">
+								<ul class="nav nav-tabs">
+									<li class="nav-item">
+										<a class="nav-link active" href="#" data-filter="all">
+											<i class="fa fa-fw fa-utensils"></i> All Dishes
+										</a>
+									</li>
+									{% for one_p_category in all_product_category_name %}
+									<li class="nav-item">
+										<a class="nav-link" href="#" data-filter="{{ one_p_category.pc_name }}">
+											<i class="fa fa-fw fa-angle-double-down"></i> {{ one_p_category.pc_name }}
+										</a>
+									</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+						<!-- END nav-container -->
+					</div>
+					<!-- END pos-menu-sidebar -->
+				
+					<!-- BEGIN pos-content -->
+					<div class="pos-content">
+						<div class="pos-content-container h-100">
+							<div class="row gx-4">
+								{% for product in all_products_data_retrieve %}
+								<div class="col-md-4 col-sm-6 pb-4 product-item" style="width: 337px;" data-name="{{product.p_name}}" data-desc="{{product.p_description}}" data-type="{{product.product_category.pc_name}}">
+									<div class="pos-product">
+										<div class="img" style="background-image: url({{ url_for('static', filename='uploaded_files/' + product.p_image) }})"></div>
+										<div class="info">
+											<div class="title">{{product.p_name}}&reg;</div>
+											<div class="desc">{{product.p_description}}</div>
+											<div class="price mb-2">${{product.p_price}}</div>
+											<!-- Add to cart button with data attributes -->
+											<a href="{{url_for('add_to_cart_in_session', Product_Id=product.p_id)}}" class="btn btn-theme fw-semibold d-block">Add to Cart</a>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<!-- END pos-content -->
+				
+					<!-- BEGIN pos-cart-sidebar -->
+					<div class="pos-sidebar" id="pos-sidebar">
+						<div class="h-100 d-flex flex-column p-0">
+							<!-- BEGIN pos-sidebar-header -->
+							<div class="pos-sidebar-header">
+								<div class="back-btn">
+									<button type="button" data-toggle-class="pos-mobile-sidebar-toggled" data-toggle-target="#pos" class="btn">
+										<i class="fa fa-chevron-left"></i>
+									</button>
+								</div>
+								<div class="icon"><i class="fa fa-plate-wheat"></i></div>
+								<div class="title">New Order</div>
+								<div class="order small">Order: <span class="fw-semibold">#0056</span></div>
+							</div>
+							<!-- END pos-sidebar-header -->
+
+							<!-- BEGIN pos-sidebar-body -->
+							<div class="pos-sidebar-body tab-content" data-scrollbar="true" data-height="100%">
+								<!-- BEGIN #newOrderTab -->
+								<div class="tab-pane fade h-100 show active" id="newOrderTab">
+									<!-- Products will be dynamically added here -->
+									{% for item in cart_items %}
+									<div class="pos-order">
+										<div class="pos-order-product">
+											<div class="img" style="background-image: url({{ url_for('static', filename='uploaded_files/' + item.productImageUrl) }})"></div>
+											<div class="flex-1">
+												<div class="h6 mb-1" hidden>{{ item.productId }}</div>
+												<div class="h6 mb-1">{{ item.productName }}</div>
+												<div class="small">${{ item.productPrice }}</div>
+												<div class="d-flex">
+													<!-- Decrease quantity button with product ID -->
+													<a href="{{ url_for('dec_quantity_in_session', Product_Id=item.productId) }}" class="btn btn-secondary btn-sm decrease-quantity"><i class="fa fa-minus"></i></a>
+													<!-- Quantity input -->
+													<input type="text" min="1" class="quantity form-control w-50px form-control-sm mx-2 bg-white bg-opacity-25 bg-white bg-opacity-25 text-center" value="{{ item.quantity }}" readonly>
+													<!-- Increase quantity button with product ID -->
+													<a href="{{ url_for('inc_quantity_in_session', Product_Id=item.productId) }}" class="btn btn-secondary btn-sm increase-quantity"><i class="fa fa-plus"></i></a>
+												</div>
+											</div>
+										</div>
+										<div class="pos-order-price d-flex flex-column">
+											<div class="flex-1">${{ item.productPrice * item.quantity }}</div>
+											<div class="text-end">
+												<a href="{{ url_for('remove_from_session_data', Product_Id=item.productId) }}" class="btn btn-default btn-sm delete-item-cart"><i class="fa fa-trash"></i></a>
+											</div>
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+								<!-- END #newOrderTab -->
+							</div>
+							
+							<!-- END pos-sidebar-body -->
+
+						
+							<!-- BEGIN pos-sidebar-footer -->
+							<div class="pos-sidebar-footer">
+								<div class="d-flex align-items-center mb-2">
+									<div>Subtotal</div>
+									<div class="flex-1 text-end h6 mb-0" id="Subtotal">${{ SubTotal }}</div>
+								</div>
+								<div class="d-flex align-items-center">
+									<div>Delivery Charges (0%)</div>
+									<div class="flex-1 text-end h6 mb-0">$0.0</div>
+								</div>
+								<hr class="opacity-1 my-10px">
+								<div class="d-flex align-items-center mb-2">
+									<div>Total</div>
+									<div class="flex-1 text-end h4 mb-0" id="Total">${{ Total }}</div>
+								</div>
+								<div class="mt-3">
+									<div class="d-flex">
+										<a href="#" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
+											<span>
+												<i class="fa fa-bell fa-lg my-10px d-block"></i>
+												<span class="small fw-semibold">Service</span>
+											</span>
+										</a>
+										<a href="#" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
+											<span>
+												<i class="fa fa-receipt fa-fw fa-lg my-10px d-block"></i>
+												<span class="small fw-semibold">Bill</span>
+											</span>
+										</a>
+										<a href="#" class="btn btn-theme flex-fill d-flex align-items-center justify-content-center customer-submit-order">
+											<span>
+												<i class="fa fa-cash-register fa-lg my-10px d-block"></i>
+												<span class="small fw-semibold">Submit Order</span>
+											</span>
+										</a>
+									</div>
+								</div>
+							</div>
+							<!-- END pos-sidebar-footer -->
+						</div>
+					</div>
+					<!-- END pos-cart-sidebar -->
+				</div>
+			</div>
+			<!-- END pos -->
+			
+			<!-- BEGIN pos-mobile-sidebar-toggler -->
+			<a href="#" class="pos-mobile-sidebar-toggler" data-toggle-class="pos-mobile-sidebar-toggled" data-toggle-target="#pos">
+				<i class="fa fa-shopping-bag"></i>
+				<span class="badge">{{ item_count }}</span>
+			</a>
+			<!-- END pos-mobile-sidebar-toggler -->
+		</div>
+		<!-- END #content -->
+
+		<!-- BEGIN theme-panel -->
+		<div class="theme-panel">
+			<a href="javascript:;" class="theme-collapse-btn bg-warning" data-toggle="modal" data-target="#chatModal">
+				<i class="fab fa-rocketchat"></i>
+			</a>
+		</div>
+		
+		<!-- Chat Modal -->
+		<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="chatModalLabel">Chat Bot</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="chat-messages" class="chat-messages"></div>
+						<div class="input-group">
+							<input type="text" id="chat-input" class="form-control chat-input" placeholder="Type a message...">
+							<div class="input-group-append">
+								<button id="send-chat" class="btn btn-primary send-chat-btn">Send</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END theme-panel -->
+		
+		<!-- BEGIN btn-scroll-top -->
+		<a href="#" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
+		<!-- END btn-scroll-top -->
+	</div>
+	<!-- END #app -->
+
+	
+	<!-- ================== BEGIN core-js ================== -->
+	<script src="{{ url_for('static', filename='js/vendor.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/app.min.js') }}"></script>
+	<!-- ================== END core-js ================== -->
+
+	<!-- ================== BEGIN use for add to card data ================== -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- ================== END BEGIN use for add to card data ================== -->
+
+	<!-- ================== BEGIN page-js ================== -->
+	<script src="{{ url_for('static', filename='js/demo/pos-customer-order.demo.js') }}"></script>
+	<!-- ================== END page-js ================== -->
+	<!-- ================== BEGIN Bootstrap for Model-js ================== -->
+	<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/bootstrap/js/popper.min.js') }}"></script>
+	<!-- ================== END Bootstrap for Model-js ================== -->
+	
+
+	<script>
+		$(document).ready(function() {
+			$('.customer-submit-order').on('click', function(e) {
+				e.preventDefault();
+				
+				var orderData = [];
+				$('.pos-order').each(function() {
+					var productId = $(this).find('.h6[hidden]').text();
+					var quantity = parseInt($(this).find('.quantity').val());
+					var price = parseFloat($(this).find('.small').text().replace('$', ''));
+					orderData.push({
+						productId: parseInt(productId),
+						quantity: quantity,
+						price: price
+					});
+				});
+
+				$.ajax({
+					type: 'POST',
+					url: '/submit_order',
+					data: JSON.stringify(orderData),
+					contentType: 'application/json;charset=UTF-8',
+					success: function(response) {
+						if (response.success) {
+							// Clear the cart
+							$('.pos-order').remove();
+							$('#Subtotal').text('$0.00');
+							$('#Total').text('$0.00');
+							// Update the cart badge
+							$('.badge').text('0');
+							alert('Order submitted successfully!');
+						} else {
+							alert('Error submitting order: ' + response.error);
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('AJAX error: ' + textStatus + ': ' + errorThrown);
+					}
+				});
+			});
+		});
+
+	</script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const searchInput = document.getElementById('searchInput');
+			const productItems = document.querySelectorAll('.product-item');
+	
+			searchInput.addEventListener('input', function () {
+				const query = searchInput.value.toLowerCase();
+	
+				// Filter product items
+				productItems.forEach(function (item) {
+					const name = item.getAttribute('data-name').toLowerCase();
+					const desc = item.getAttribute('data-desc').toLowerCase();
+	
+					if (name.includes(query) || desc.includes(query)) {
+						item.style.display = 'block';
+					} else {
+						item.style.display = 'none';
+					}
+				});
+			});
+		});
+	</script>
+	<!-- JavaScript to handle chat interactions -->
+	<script>
+		$(document).ready(function(){
+			function sendMessage() {
+				var userMessage = $('#chat-input').val();
+				if (userMessage.trim() === '') {
+					return;
+				}
+	
+				// Display the user's message
+				$('#chat-messages').append('<div class="user-message bg-primary">' + userMessage + '</div>');
+	
+				// Send the user's message to the Flask backend
+				$.ajax({
+					type: 'POST',
+					url: '/chatbot',
+					contentType: 'application/json',
+					data: JSON.stringify({ 'message': userMessage }),
+					success: function(response) {
+						var botResponse = response.response;
+						// Display the bot's response
+						$('#chat-messages').append('<div class="bot-response bg-success">' + botResponse + '</div>');
+					},
+					error: function() {
+						$('#chat-messages').append('<div class="bot-response bg-success">Error communicating with the bot.</div>');
+					}
+				});
+	
+				// Clear the input field
+				$('#chat-input').val('');
+			}
+	
+			$('#send-chat').click(function(){
+				sendMessage();
+			});
+	
+			$('#chat-input').keypress(function(event) {
+				if (event.which == 13) { // Enter key pressed
+					sendMessage();
+					event.preventDefault(); // Prevent the default form submission
+				}
+			});
+		});
+	</script>
+
+<!-- Custom CSS for chat messages -->
+<style>
+    .chat-messages {
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+    .user-message {
+        text-align: right;
+        margin-bottom: 16px;
+    }
+    .bot-response {
+        text-align: left;
+        margin-bottom: 16px;
+    }
+</style>
+	
+	
+</body>
+</html>
