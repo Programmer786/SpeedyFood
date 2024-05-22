@@ -2,23 +2,82 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Speedy Food | POS - Table Booking</title>
+	<title>Speedy Food | POS - Customer Order System</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
 	<meta name="author" content="">
 	
 	<!-- ================== BEGIN core-css ================== -->
-	<link href="assets/css/vendor.min.css" rel="stylesheet">
-	<link href="assets/css/app.min.css" rel="stylesheet">
-	<!-- ================== END core-css ================== -->
-	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/vendor.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" type="text/css" />
 	<!-- ================== BEGIN page-css ================== -->
-	<link href="assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet">
-	<link href="assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css') }}" type="text/css" />
 	<!-- ================== END page-css ================== -->
-
+	<!-- ================== END core-css ================== -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" type="text/css" />
+	<!-- Custom CSS for chat messages -->
+	<style>
+		.chat-messages {
+			max-height: 300px;
+			overflow-y: auto;
+			margin-bottom: 20px;
+		}
+		.user-message {
+			text-align: right;
+			margin-bottom: 16px;
+		}
+		.bot-response {
+			text-align: left;
+			margin-bottom: 16px;
+		}
+	</style>
+	<style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .pos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo-img {
+            margin-right: 10px;
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+        }
+        .menu-link {
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .menu-img {
+            margin-right: 10px;
+        }
+        .dropdown-menu {
+            min-width: 200px;
+        }
+        .dropdown-item i {
+            margin-left: auto;
+        }
+    </style>
 </head>
-<body>
+<body class='pace-top'>
 	<!-- BEGIN #app -->
 	<div id="app" class="app app-content-full-height app-without-sidebar app-without-header">
 		<!-- BEGIN #content -->
@@ -30,27 +89,31 @@
 					<!-- BEGIN pos-header -->
 					<div class="pos-header">
 						<div class="logo">
-							<a href="pos_counter_checkout.html">
+							<a href="/" class="text-primary" >
 								<div class="logo-img"><i class="fa fa-bowl-rice" style="font-size: 1.5rem;"></i></div>
-								<div class="logo-text">Pine & Dine</div>
+								<div class="logo-text" style="font-weight: bold;">SpeedyFood</div>
 							</a>
 						</div>
 						<div class="time" id="time">00:00</div>
 						<div class="nav">
-							<div class="nav-item">
-								<a href="pos_kitchen_order.html" class="nav-link">
-									<i class="far fa-clock nav-icon"></i>
+							<div class="nav-item dropdown">
+								<a href="#" data-bs-toggle="dropdown" data-display="static" class="menu-link">
+									<div class="menu-img online">
+										<img src="{{ url_for('static', filename='img/user/down_arrow.jpg') }}" style="width: 40px !important;" class="ms-100 mh-100 rounded-circle" alt="Profile Picture">
+									</div>
+									<div class="menu-text">{{ session.Cust_FullName }}</div>
 								</a>
-							</div>
-							<div class="nav-item">
-								<a href="pos_table_booking.html" class="nav-link">
-									<i class="far fa-calendar-check nav-icon"></i>
-								</a>
-							</div>
-							<div class="nav-item">
-								<a href="pos_menu_stock.html" class="nav-link">
-									<i class="fa fa-chart-pie nav-icon"></i>
-								</a>
+								<div class="dropdown-menu dropdown-menu-end me-lg-3">
+									{% if session.cust_RolName %}
+									<a class="dropdown-item d-flex align-items-center" href="{{url_for('update_customer_profile', CustId=session.Cust_Id)}}">Edit Profile <i class="fa fa-user-circle fa-fw ms-auto text-body text-opacity-50"></i></a>
+									{% endif %}
+									<div class="dropdown-divider"></div>
+									{% if session.cust_RolName %}
+										<a class="dropdown-item d-flex align-items-center" href="/cust_logout">Log Out <i class="fa fa-sign-out-alt fa-fw ms-auto text-body text-opacity-50"></i></a>
+									{% else %}
+										<a class="dropdown-item d-flex align-items-center" href="/cust_login">Login <i class="fa fa-sign-in-alt fa-fw ms-auto text-body text-opacity-50"></i></a>
+									{% endif %}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -1996,49 +2059,42 @@
 		<!-- END #content -->
 		
 		<!-- BEGIN theme-panel -->
-	<div class="theme-panel">
-		<a href="javascript:;" data-click="theme-panel-expand" class="theme-collapse-btn"><i class="fa fa-cog"></i></a>
-		<div class="theme-panel-content">
-			<ul class="theme-list clearfix">
-				<li><a href="javascript:;" class="bg-red" data-theme="theme-red" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Red" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-pink" data-theme="theme-pink" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Pink" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-orange" data-theme="theme-orange" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Orange" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-yellow" data-theme="theme-yellow" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Yellow" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-lime" data-theme="theme-lime" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Lime" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-green" data-theme="theme-green" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Green" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-teal" data-theme="theme-teal" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Teal" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-cyan" data-theme="theme-cyan" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Aqua" data-original-title="" title="">&nbsp;</a></li>
-				<li class="active"><a href="javascript:;" class="bg-blue" data-theme="" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Default" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-purple" data-theme="theme-purple" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Purple" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-indigo" data-theme="theme-indigo" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Indigo" data-original-title="" title="">&nbsp;</a></li>
-				<li><a href="javascript:;" class="bg-gray-600" data-theme="theme-gray-600" data-click="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body" data-bs-title="Gray" data-original-title="" title="">&nbsp;</a></li>
-			</ul>
-			<hr class="mb-0">
-			<div class="row mt-10px pt-3px">
-				<div class="col-9 control-label text-body-emphasis fw-bold">
-					<div>Dark Mode <span class="badge bg-theme text-theme-color ms-1 position-relative py-4px px-6px" style="top: -1px">NEW</span></div>
-					<div class="lh-sm fs-13px fw-semibold">
-						<small class="text-body-emphasis opacity-50">
-							Adjust the appearance to reduce glare and give your eyes a break.
-						</small>
+		<div class="theme-panel">
+			<a href="javascript:;" class="theme-collapse-btn bg-warning" data-toggle="modal" data-target="#chatModal">
+				<i class="fab fa-rocketchat"></i>
+			</a>
+		</div>
+		
+		<!-- Chat Modal -->
+		<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="chatModalLabel">Chat Bot</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
-				</div>
-				<div class="col-3 d-flex">
-					<div class="form-check form-switch ms-auto mb-0 mt-2px">
-						<input type="checkbox" class="form-check-input" name="app-theme-dark-mode" id="appThemeDarkMode" value="1">
-						<label class="form-check-label" for="appThemeDarkMode">&nbsp;</label>
+					<div class="modal-body">
+						<div id="chat-messages" class="chat-messages"></div>
+						<div class="input-group">
+							<input type="text" id="chat-input" class="form-control chat-input" placeholder="Type a message...">
+							<div class="input-group-append">
+								<button id="send-chat" class="btn btn-primary send-chat-btn">Send</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- END theme-panel -->
+		<!-- END theme-panel -->
+		
 		<!-- BEGIN btn-scroll-top -->
 		<a href="#" data-click="scroll-top" class="btn-scroll-top fade"><i class="fa fa-arrow-up"></i></a>
 		<!-- END btn-scroll-top -->
 	</div>
 	<!-- END #app -->
-	
+
 	<!-- BEGIN #modalPosBooking -->
 	<div class="modal modal-pos fade" id="modalPosBooking">
 		<!-- BEGIN modal-dialog -->
@@ -2176,14 +2232,70 @@
 	<!-- END #modalPosBooking -->
 	
 	<!-- ================== BEGIN core-js ================== -->
-	<script src="assets/js/vendor.min.js"></script>
-	<script src="assets/js/app.min.js"></script>
+	<script src="{{ url_for('static', filename='js/vendor.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/app.min.js') }}"></script>
 	<!-- ================== END core-js ================== -->
-	
+
+	<!-- ================== BEGIN use for add to card data ================== -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- ================== END BEGIN use for add to card data ================== -->
+
 	<!-- ================== BEGIN page-js ================== -->
-	<script src="assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
-	<script src="assets/js/demo/pos-table-booking.demo.js"></script>
+	<script src="{{ url_for('static', filename='js/demo/pos-customer-order.demo.js') }}"></script>
 	<!-- ================== END page-js ================== -->
+	<!-- ================== BEGIN Bootstrap for Model-js ================== -->
+	<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='plugins/bootstrap/js/popper.min.js') }}"></script>
+	<!-- ================== END Bootstrap for Model-js ================== -->
+	<!-- ================== BEGIN page-js ================== -->
+	<script src="{{ url_for('static', filename='plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/demo/pos-table-booking.demo.js') }}"></script>
+	<!-- ================== END page-js ================== -->
+	<!-- JavaScript to handle chat interactions -->
+	<script>
+		$(document).ready(function(){
+			function sendMessage() {
+				var userMessage = $('#chat-input').val();
+				if (userMessage.trim() === '') {
+					return;
+				}
+	
+				// Display the user's message
+				$('#chat-messages').append('<div class="user-message bg-primary">' + userMessage + '</div>');
+	
+				// Send the user's message to the Flask backend
+				$.ajax({
+					type: 'POST',
+					url: '/chatbot',
+					contentType: 'application/json',
+					data: JSON.stringify({ 'message': userMessage }),
+					success: function(response) {
+						var botResponse = response.response;
+						// Display the bot's response
+						$('#chat-messages').append('<div class="bot-response bg-success">' + botResponse + '</div>');
+					},
+					error: function() {
+						$('#chat-messages').append('<div class="bot-response bg-success">Error communicating with the bot.</div>');
+					}
+				});
+	
+				// Clear the input field
+				$('#chat-input').val('');
+			}
+	
+			$('#send-chat').click(function(){
+				sendMessage();
+			});
+	
+			$('#chat-input').keypress(function(event) {
+				if (event.which == 13) { // Enter key pressed
+					sendMessage();
+					event.preventDefault(); // Prevent the default form submission
+				}
+			});
+		});
+	</script>
+	
 	
 </body>
 </html>

@@ -13,7 +13,22 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" type="text/css" />
 	<!-- ================== END core-css ================== -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" type="text/css" />
-	
+	<!-- Custom CSS for chat messages -->
+	<style>
+		.chat-messages {
+			max-height: 300px;
+			overflow-y: auto;
+			margin-bottom: 20px;
+		}
+		.user-message {
+			text-align: right;
+			margin-bottom: 16px;
+		}
+		.bot-response {
+			text-align: left;
+			margin-bottom: 16px;
+		}
+	</style>
 	
 </head>
 <body class='pace-top'>
@@ -158,10 +173,10 @@
 												<span class="small fw-semibold">Service</span>
 											</span>
 										</a>
-										<a href="#" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
+										<a href="/pos_table_booking" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
 											<span>
-												<i class="fa fa-receipt fa-fw fa-lg my-10px d-block"></i>
-												<span class="small fw-semibold">Bill</span>
+												<i class="fa fa-bed fa-fw fa-lg my-10px d-block"></i>
+												<span class="small fw-semibold">Table</span>
 											</span>
 										</a>
 										<a href="#" class="btn btn-theme flex-fill d-flex align-items-center justify-content-center customer-submit-order">
@@ -355,24 +370,6 @@
 			});
 		});
 	</script>
-
-<!-- Custom CSS for chat messages -->
-<style>
-    .chat-messages {
-        max-height: 300px;
-        overflow-y: auto;
-        margin-bottom: 20px;
-    }
-    .user-message {
-        text-align: right;
-        margin-bottom: 16px;
-    }
-    .bot-response {
-        text-align: left;
-        margin-bottom: 16px;
-    }
-</style>
-	
 	
 </body>
 </html>
