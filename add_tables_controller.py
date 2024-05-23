@@ -2,7 +2,25 @@ from app import app
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import asc
 from database_model import *
-from flask import render_template, flash, session, request, redirect
+from flask import render_template, flash, session, request, redirect, url_for, jsonify
+
+
+@app.route("/pos_table_booking")
+def pos_table_booking():
+    try:
+        all_tables_retrieve = RestaurantTables.query.all()
+        tables_count = RestaurantTables.query.count()
+
+        base_static_url = url_for('static', filename='')
+
+        return render_template('Customer/pos_table_booking.html',
+                               base_static_url=base_static_url,
+                               tables_count=tables_count,
+                               all_tables_retrieve=all_tables_retrieve)
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error: {str(e)}", "danger")
+        return render_template('Customer/pos_customer_order.html')
 
 
 @app.route('/add_table', methods=['POST', 'GET'])
@@ -14,12 +32,14 @@ def add_table():
 
             if request.method == 'POST':
                 get_table_name = request.form['table_name'].upper()
+                get_table_pax = request.form['table_pax']
                 if not get_table_name:
                     flash("Error. Please fill the table name", "danger")
                     return redirect('/add_table')
                 try:
                     new_entry_table = RestaurantTables(
-                        table_name=get_table_name
+                        table_name=get_table_name,
+                        table_pax=get_table_pax
                     )
                     db.session.add(new_entry_table)
                     db.session.commit()
@@ -65,6 +85,7 @@ def update_table(Table_Id):
 
             if request.method == 'POST':
                 get_table_name = request.form['table_name'].upper()
+                get_table_pax = request.form['table_pax']
 
                 if not get_table_name:
                     flash("Error. Please fill the table name", "danger")
@@ -72,6 +93,7 @@ def update_table(Table_Id):
 
                 try:
                     table_to_update.table_name = get_table_name
+                    table_to_update.table_pax = get_table_pax
                     db.session.commit()
                     flash("Record Successfully Updated", "success")
                     return redirect('/add_table')
@@ -87,3 +109,53 @@ def update_table(Table_Id):
             return redirect('/add_table')
     else:
         return render_template('Administrator/login.html')
+
+
+@app.route('/api/time_slots')
+def get_time_slots():
+    table_id = request.args.get('table_id')
+    reservation_date = request.args.get('reservation_date')
+
+    # Fetch all time slots
+    time_slots = TimeSlots.query.all()
+
+    # Fetch reservations for the given table and date
+    reservations = TableReservations.query.filter_by(table_id=table_id, reservation_date=reservation_date).all()
+
+    # Mark the time slots with their reservation status
+    available_slots = []
+    for slot in time_slots:
+        status = 'Available'
+        for reservation in reservations:
+            if reservation.time_slot_id == slot.time_slot_id:
+                status = f'Reserved by {reservation.customers.cust_full_name}'
+                break
+        available_slots.append({
+            'time_slot_id': slot.time_slot_id,
+            'time': slot.slot_time.strftime('%I:%M %p'),
+            'status': status
+        })
+
+    return jsonify({'time_slots': available_slots})
+
+
+@app.route('/api/book_reservation', methods=['POST'])
+def book_reservation():
+    data = request.get_json()
+
+    new_reservation = TableReservations(
+        customer_id=data['customer_id'],
+        table_id=data['table_id'],
+        reservation_date=data['reservation_date'],
+        number_of_guests=data['number_of_guests'],
+        special_requests=data.get('special_requests', '')
+    )
+
+    try:
+        db.session.add(new_reservation)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)})
+
