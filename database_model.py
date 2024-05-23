@@ -47,14 +47,14 @@ class Users(db.Model):
     restaurant_names = db.relationship('RestaurantNames', backref=db.backref('users', lazy=True))
 
 
-# Create province model. The table name "province" will automatically be assigned to the model’s table.
+# Create a province model. The table name "province" will automatically be assigned to the model’s table.
 class Province(db.Model):
     __tablename__ = 'province'
     province_sno = db.Column(db.Integer, primary_key=True)
     province_name = db.Column(db.String(50), unique=True, nullable=False)
 
 
-# Create District model. The table name "district" will automatically be assigned to the model’s table.
+# Create a District model. The table name "district" will automatically be assigned to the model’s table.
 class District(db.Model):
     __tablename__ = 'district'
     district_sno = db.Column(db.Integer, primary_key=True)
@@ -98,7 +98,7 @@ class Products(db.Model):
 
 
 class Customers(db.Model):
-    __tablename__ = 'customer'
+    __tablename__ = 'customers'
     cust_id = db.Column(db.Integer, primary_key=True)
     cust_user_name = db.Column(db.String(50), unique=True, nullable=False)
     cust_full_name = db.Column(db.String(50), unique=False, nullable=False)
@@ -114,7 +114,7 @@ class Customers(db.Model):
 class Order(db.Model):
     __tablename__ = 'order'
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.cust_id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
     total_price = db.Column(db.Numeric(precision=20, scale=1), nullable=False)
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     # Define the relationships
@@ -128,3 +128,38 @@ class OrderItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('products.p_id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(precision=20, scale=1), nullable=False)
+
+
+class RestaurantTables(db.Model):
+    __tablename__ = 'restaurant_tables'
+    table_id = db.Column(db.Integer, primary_key=True)
+    table_name = db.Column(db.String(4), unique=True, nullable=False)
+
+
+class TimeSlots(db.Model):
+    __tablename__ = 'time_slots'
+    time_slot_id = db.Column(db.Integer, primary_key=True)
+    slot_time = db.Column(db.Time, nullable=False)
+    description = db.Column(db.String(255))
+    completed = db.Column(db.Integer, default=0)
+    upcoming = db.Column(db.Integer, default=0)
+    in_progress = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class TableReservations(db.Model):
+    __tablename__ = 'table_reservations'
+    reservation_id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
+    table_number = db.Column(db.Integer, nullable=False)
+    reservation_date = db.Column(db.Date, nullable=False)
+    time_slot_id = db.Column(db.Integer, db.ForeignKey('time_slots.time_slot_id'), nullable=False)
+    number_of_guests = db.Column(db.Integer, nullable=False)
+    special_requests = db.Column(db.Text)
+    status = db.Column(db.Enum('Reserved', 'Completed', 'Cancelled', name='reservation_status'), default='Reserved')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    # Relationships
+    customers = db.relationship('Customers', backref=db.backref('table_reservations', lazy=True))
+    time_slots = db.relationship('TimeSlots', backref=db.backref('table_reservations', lazy=True))

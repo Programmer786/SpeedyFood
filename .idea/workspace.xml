@@ -5,14 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29f79567-5853-4715-830d-2be7d53edefa" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/SpeedyFood.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/add_categorys_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_categorys_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer_cart_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/customer_cart_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Administrator/_Header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/_Header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Administrator/_Layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/_Layout.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Administrator/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/_Header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/_Header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/pos_table_booking.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_table_booking.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Administrator/_Sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/_Sidebar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,15 +44,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/FYP/SpeedyFood/app.py&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.app.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "D:/PycharmProjects/FYP/SpeedyFood",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\FYP\SpeedyFood" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="SpeedyFood" />

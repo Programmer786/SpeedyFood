@@ -1,4 +1,3 @@
-import traceback
 from sqlalchemy.orm import joinedload
 from app import app
 from database_model import *
@@ -27,7 +26,6 @@ def customer_dashboard():
         cart_items = []
         SubTotal = 0.0
         Taxes = 0.0
-        Total = 0.0
         item_count = 0
 
         if 'Cust_Id' in session:
@@ -271,7 +269,6 @@ def pos_table_booking():
         cart_items = []
         SubTotal = 0.0
         Taxes = 0.0
-        Total = 0.0
         item_count = 0
 
         if 'Cust_Id' in session:
