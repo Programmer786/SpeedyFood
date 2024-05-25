@@ -4,23 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29f79567-5853-4715-830d-2be7d53edefa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/add_categorys_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_categorys_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/add_tables_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_tables_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer_cart_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/customer_cart_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/a04d850a11fa_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/_Header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/_Header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/_Layout_Auth.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/_Layout_Auth.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Customer/pos_table_booking.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_table_booking.html" afterDir="false" />
-    </list>
+    <list default="true" id="29f79567-5853-4715-830d-2be7d53edefa" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
