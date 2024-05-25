@@ -1,4 +1,7 @@
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql.functions import now
+
 from app import app
 from database_model import *
 from flask import render_template, session, request, redirect, jsonify, url_for, flash
@@ -10,6 +13,62 @@ def customer_dashboard():
         # Get all product categories and restaurant names
         all_product_category_name = ProductCategory.query.all()
         all_restaurant__name = RestaurantNames.query.all()
+        all_tables_retrieve = RestaurantTables.query.all()
+        if 'Cust_Id' in session:
+            all_order_retrieve = (
+                Order.query
+                .filter(Order.customer_id == session['Cust_Id'])
+                .options(
+                    joinedload(Order.order_items).joinedload(OrderItem.products),
+                    joinedload(Order.customers)
+                )
+                .all()
+            )
+
+            # Get the current datetime
+            now_date = datetime.now()
+            # Separate the date and time
+            current_date = now_date.date()
+            current_time = now_date.time()
+
+            # Query to retrieve reservations based on conditions
+            all_tables_reservation_retrieve = (
+                TableReservations.query
+                .filter(
+                    TableReservations.customer_id == session['Cust_Id'],
+                    or_(
+                        TableReservations.reservation_date > current_date,
+                        and_(
+                            TableReservations.reservation_date == current_date,
+                            TableReservations.time_to > current_time
+                        )
+                    )
+                )
+                .options(
+                    joinedload(TableReservations.restaurant_tables),
+                    joinedload(TableReservations.customers)
+                )
+                .all()
+            )
+
+
+        else:
+            all_order_retrieve = (
+                Order.query
+                .options(
+                    joinedload(Order.order_items).joinedload(OrderItem.products),
+                    joinedload(Order.customers)
+                )
+                .all()
+            )
+            all_tables_reservation_retrieve = (
+                TableReservations.query
+                .options(
+                    joinedload(TableReservations.restaurant_tables),
+                    joinedload(TableReservations.customers)
+                )
+                .all()
+            )
 
         # Retrieve all products with eager loading of related data
         all_products_data_retrieve = (
@@ -52,7 +111,10 @@ def customer_dashboard():
                                SubTotal=SubTotal,
                                Taxes=Taxes,
                                Total=Total,
-                               item_count=item_count)
+                               item_count=item_count,
+                               all_tables_retrieve=all_tables_retrieve,
+                               all_order_retrieve=all_order_retrieve,
+                               all_tables_reservation_retrieve=all_tables_reservation_retrieve)
     except Exception as e:
         db.session.rollback()
         flash(f"Error: {str(e)}", "danger")
@@ -245,3 +307,58 @@ def chatbot():
     user_message = request.json['message']
     bot_response = generate_response(user_message)
     return jsonify({'response': bot_response})
+
+
+@app.route('/table_reserve_with_time', methods=['POST'])
+def table_reserve_with_time():
+    if 'Cust_Id' in session:
+        try:
+            table_id = request.form['table_id']
+            reservation_date = request.form['table_date']
+            number_of_chair = request.form['table_chair']
+            time_from = request.form['Time_from']
+            time_to = request.form['Time_to']
+
+            # Convert the date and time from string to datetime objects
+            convert_reservation_date = datetime.strptime(reservation_date, '%Y-%m-%d').date()
+            convert_time_from = datetime.strptime(time_from, '%H:%M').time()
+            convert_time_to = datetime.strptime(time_to, '%H:%M').time()
+
+            # Check if a reservation with the same table_id and date exists
+            existing_reservation = TableReservations.query.filter_by(
+                customer_id=session['Cust_Id'],
+                table_id=table_id,
+                reservation_date=convert_reservation_date,
+                status='Reserved'
+            ).first()
+
+            if existing_reservation:
+                # Update existing reservation
+                existing_reservation.number_of_chairs = number_of_chair
+                existing_reservation.time_from = convert_time_from
+                existing_reservation.time_to = convert_time_to
+                existing_reservation.status = 'Reserved'
+                db.session.commit()
+                flash("Reservation Timing Update Successfully", "success")
+            else:
+                # Create a new reservation
+                new_reservation = TableReservations(
+                    customer_id=session['Cust_Id'],
+                    table_id=table_id,
+                    reservation_date=convert_reservation_date,
+                    number_of_chairs=number_of_chair,
+                    time_from=convert_time_from,
+                    time_to=convert_time_to,
+                    status='Reserved'
+                )
+                db.session.add(new_reservation)
+                db.session.commit()
+                flash("Reservation Successfully", "success")
+
+            return redirect('/')
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error: {str(e)}", "danger")
+            return redirect('/')
+    else:
+        return render_template('Customer/customer_login.html')

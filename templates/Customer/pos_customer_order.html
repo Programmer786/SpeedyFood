@@ -76,6 +76,18 @@
 					<!-- BEGIN pos-content -->
 					<div class="pos-content">
 						<div class="pos-content-container h-100">
+							<!-- BEGIN Message-Show -->
+							{% with messages = get_flashed_messages(with_categories=true) %}
+								{% if messages %}
+									{% for category, message in messages %}
+										<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+											<strong>{{ category|capitalize }}!</strong> {{ message|capitalize }}.
+											<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+										</div>
+									{% endfor %}
+								{% endif %}
+							{% endwith %}
+							<!-- End Message-Show -->
 							<div class="row gx-4">
 								{% for product in all_products_data_retrieve %}
 								<div class="col-md-4 col-sm-6 pb-4 product-item" style="width: 337px;" data-name="{{product.p_name}}" data-desc="{{product.p_description}}" data-type="{{product.product_category.pc_name}}">
@@ -167,20 +179,20 @@
 								</div>
 								<div class="mt-3">
 									<div class="d-flex">
-										<a href="#" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
+										<!-- <a href="#" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
 											<span>
 												<i class="fa fa-bicycle fa-lg my-10px d-block"></i>
 												<span class="small fw-semibold">Delivery</span>
 											</span>
-										</a>
-										<a href="/pos_table_booking" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
-											<span>
+										</a> -->
+										<a href="#" data-bs-toggle="modal" data-bs-target="#modalPosBooking" class="btn btn-default w-70px me-10px d-flex align-items-center justify-content-center">
+											<span style="font-size: 16px;">
 												<i class="fa fa-bed fa-fw fa-lg my-10px d-block"></i>
 												<span class="small fw-semibold">Dine In</span>
 											</span>
 										</a>
 										<a href="#" class="btn btn-theme flex-fill d-flex align-items-center justify-content-center customer-submit-order">
-											<span>
+											<span style="font-size: 22px;">
 												<i class="fa fa-cash-register fa-lg my-10px d-block"></i>
 												<span class="small fw-semibold">Take Away</span>
 											</span>
@@ -204,6 +216,90 @@
 			<!-- END pos-mobile-sidebar-toggler -->
 		</div>
 		<!-- END #content -->
+
+		<!-- BEGIN #modalPosBooking -->
+		<div class="modal modal-pos fade" id="modalPosBooking">
+			<!-- BEGIN modal-dialog -->
+			<div class="modal-dialog modal-md">
+				<!-- BEGIN modal-content -->
+				<div class="modal-content border-0">
+					<!-- BEGIN card -->
+					<div class="card">
+						<!-- BEGIN card-body -->
+						<div class="card-body p-0">
+							<form action="/table_reserve_with_time" method="post">
+								<!-- BEGIN modal-header -->
+								<div class="modal-header align-items-center">
+									<div class="ms-auto" style="font-weight: bold; font-size: 22px;">
+										Table Reservation with Time
+									</div>
+									<a href="#" data-bs-dismiss="modal" class="ms-auto btn-close"></a>
+								</div>
+								<!-- END modal-header -->
+								<!-- BEGIN modal-body -->
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="form-group mb-2">
+												<div class="input-group">
+													<div class="input-group-text fw-semibold fs-13px">Select Table Number</div>
+													<select class="form-control" name="table_id" id="table-dropdown" required>
+														{% for table in all_tables_retrieve %}
+															<option value="{{ table.table_id }}">{{ table.table_name }}</option>
+														{% endfor %}
+												  	</select>
+												</div>
+											</div>
+											<div class="form-group mb-2">
+												<div class="input-group">
+													<div class="input-group-text fw-semibold fs-13px">How Many Chairs?</div>
+													<input type="number" class="form-control" name="table_chair" value="4" max="10" min="2" required>
+												</div>
+											</div>
+											<div class="form-group mb-2">
+												<div class="input-group">
+													<div class="input-group-text fw-semibold fs-13px">Date</div>
+													<input type="date" class="form-control" name="table_date" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="form-group mb-2">
+												<div class="input-group">
+													<div class="input-group-text fw-semibold fs-13px">Time From</div>
+													<input type="time" class="form-control" name="Time_from" required>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="form-group mb-2">
+												<div class="input-group">
+													<div class="input-group-text fw-semibold fs-13px">Time To</div>
+													<input type="time" class="form-control" name="Time_to" required>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- END modal-body -->
+								<!-- BEGIN modal-footer -->
+								<div class="modal-footer">
+									<a href="#" class="btn btn-default fs-13px fw-semibold w-100px" data-bs-dismiss="modal">Cancel</a>
+									<button type="submit" class="btn btn-theme fs-13px fw-semibold w-100px">Book</button>
+								</div>
+								<!-- END modal-footer -->
+							</form>
+						</div>
+						<!-- END card-body -->
+					</div>
+					<!-- END card -->
+				</div>
+				<!-- END modal-content -->
+			</div>
+			<!-- END modal-dialog -->
+		</div>
+		<!-- END #modalPosBooking -->
+
 
 		<!-- BEGIN theme-panel -->
 		<div class="theme-panel">
@@ -260,50 +356,71 @@
 	<script src="{{ url_for('static', filename='plugins/bootstrap/js/popper.min.js') }}"></script>
 	<!-- ================== END Bootstrap for Model-js ================== -->
 	
-
+	<!-- ================== Start customer-submit-order ================== -->
 	<script>
 		$(document).ready(function() {
 			$('.customer-submit-order').on('click', function(e) {
 				e.preventDefault();
-				
-				var orderData = [];
-				$('.pos-order').each(function() {
-					var productId = $(this).find('.h6[hidden]').text();
-					var quantity = parseInt($(this).find('.quantity').val());
-					var price = parseFloat($(this).find('.small').text().replace('$', ''));
-					orderData.push({
-						productId: parseInt(productId),
-						quantity: quantity,
-						price: price
-					});
-				});
 
-				$.ajax({
-					type: 'POST',
-					url: '/submit_order',
-					data: JSON.stringify(orderData),
-					contentType: 'application/json;charset=UTF-8',
-					success: function(response) {
-						if (response.success) {
-							// Clear the cart
-							$('.pos-order').remove();
-							$('#Subtotal').text('$0.00');
-							$('#Total').text('$0.00');
-							// Update the cart badge
-							$('.badge').text('0');
-							alert('Order submitted successfully!');
-						} else {
-							alert('Error submitting order: ' + response.error);
+				// Calculate total price
+				var totalPrice = calculateTotalPrice();
+
+				// Check if total price is greater than 0
+				if (totalPrice > 0) {
+					var orderData = [];
+					$('.pos-order').each(function() {
+						var productId = $(this).find('.h6[hidden]').text();
+						var quantity = parseInt($(this).find('.quantity').val());
+						var price = parseFloat($(this).find('.small').text().replace('$', ''));
+						orderData.push({
+							productId: parseInt(productId),
+							quantity: quantity,
+							price: price
+						});
+					});
+
+					$.ajax({
+						type: 'POST',
+						url: '/submit_order',
+						data: JSON.stringify(orderData),
+						contentType: 'application/json;charset=UTF-8',
+						success: function(response) {
+							if (response.success) {
+								// Clear the cart
+								$('.pos-order').remove();
+								$('#Subtotal').text('$0.00');
+								$('#Total').text('$0.00');
+								// Update the cart badge
+								$('.badge').text('0');
+								alert('Order submitted successfully!');
+							} else {
+								alert('Error submitting order: ' + response.error);
+							}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert('AJAX error: ' + textStatus + ': ' + errorThrown);
 						}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-						alert('AJAX error: ' + textStatus + ': ' + errorThrown);
-					}
-				});
+					});
+				} else {
+					alert('Total price is 0. Please add items to your order.');
+				}
 			});
 		});
 
+		// Function to calculate total price
+		function calculateTotalPrice() {
+			var totalPrice = 0;
+			$('.pos-order').each(function() {
+				var price = parseFloat($(this).find('.small').text().replace('$', ''));
+				var quantity = parseInt($(this).find('.quantity').val());
+				totalPrice += price * quantity;
+			});
+			return totalPrice;
+		}
+
 	</script>
+	<!-- ================== END customer-submit-order ================== -->
+
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			const searchInput = document.getElementById('searchInput');

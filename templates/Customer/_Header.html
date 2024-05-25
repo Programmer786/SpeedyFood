@@ -22,6 +22,16 @@
 				<input type="text" class="form-control" id="searchInput" placeholder="Search menu...">
 			</div>
 		</div>
+		{% if session.cust_RolName %}
+		<div class="menu-item dropdown">
+			<button type="button" style="float:right;" class="btn btn-outline-primary btn-md d-block fw-500" data-bs-toggle="modal"
+        data-bs-target="#checkForFeedbackModal"> <i class="fa fa-bed"></i> Table Reserve</button>
+		</div>
+		<div class="menu-item dropdown">
+			<button type="button" style="float:right;" class="btn btn-outline-success btn-md d-block fw-500" data-bs-toggle="modal"
+        data-bs-target="#checkForOrdersModal"> <i class="fa fa-cash-register"></i> Orders</button>
+		</div>
+		{% endif %}
 		<div class="menu-item dropdown">
 			<a href="#" data-bs-toggle="dropdown" data-display="static" class="menu-link">
 				<div class="menu-img online">
@@ -54,3 +64,160 @@
 
 </div>
 <!-- END #header -->
+
+<!-- Start Modal for Check For Orders -->
+<div class="modal fade" id="checkForOrdersModal">
+	<div class="modal-dialog modal-xl modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">All Order Take Away</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<!-- BEGIN #datatable -->
+				<div id="datatable" class="mb-1" style="width: 100%;">
+					<div class="card">
+						<div class="card-body">
+							<table id="datatableCustomer" class="table text-nowrap w-100">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Product</th>
+										<th>Description</th>
+										<th>Price</th>
+										<th>Action</th>
+										<th>Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for order in all_order_retrieve %}
+										<tr>
+											<td colspan="6"><h3 style="border: 1px solid blue; text-align: center;">Order: {{loop.index}}</h3></td>
+										</tr>
+										{% for orders_item in order.order_items %}
+											<tr>
+												<td class="align-middle">{{ loop.index }}</td>
+												<td style="text-wrap: wrap;">
+													<div class="d-flex align-items-center">
+														<div class="w-60px h-60px bg-gray-100 d-flex align-items-center justify-content-center">
+															<img class="mw-100 mh-100" src="{{ url_for('static', filename='uploaded_files/' + orders_item.products.p_image) }}" alt="Product Picture">
+														</div>
+														<div class="ms-3">
+															<a href="#">{{ orders_item.products.p_name }}</a>
+														</div>
+													</div>
+												</td>
+												<td class="align-middle" style="text-wrap: wrap;">{{ orders_item.products.p_description }}</td>
+												<td class="align-middle" style="text-wrap: wrap;">{{ orders_item.products.p_price }}</td>
+												<td class="align-middle" style="text-wrap: wrap;">
+													{% if orders_item.is_verified == 1 %}
+														<a class="btn btn-success btn-circle btn-sm" href="#">
+															<i class="fa fa-download"></i> Download
+														</a>
+													{% elif not orders_item.transaction_no %}
+														<form action="#" method="post">
+															<input type="text" class="form-control" name="transaction_no" placeholder="Transaction No" required />
+															<button type="submit" class="btn btn-primary btn-circle btn-sm">
+																<i class="fa fa-download"></i> Submit
+															</button>
+														</form>
+													{% else %}
+														<a class="btn btn-warning btn-circle btn-sm" href="#">
+															<i class="fa fa-spinner"></i> Processing
+														</a>
+													{% endif %}
+												</td>
+												<td>
+													{% if orders_item.is_verified == 1 %}
+														{% if orders_item.delivery_status != 'Deliver' %}
+															<a class="btn btn-warning fw-semibold" href="#">
+																<i class="fa fa-recycle"></i> Delivery Pending
+															</a>                                                                                                       
+														{% else %}
+															<a class="btn btn-success fw-semibold" href="#">
+																<i class="fa fa-handshake"></i> Delivery Received
+															</a>
+														{% endif %}
+													{% endif %}
+												</td>
+											</tr>
+										{% endfor %}
+										<tr>
+											<td colspan="6"><hr style="border: 3px solid red;"></td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- END #datatable -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Modal for Check For Download -->
+
+
+<!-- Start Modal for Check For Feedback -->
+<div class="modal fade" id="checkForFeedbackModal">
+	<div class="modal-dialog modal-xl modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Give Feedback About This Product</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<!-- BEGIN #datatable -->
+				<div id="datatable" class="mb-1" style="width: 100%;">
+					<div class="card">
+						<div class="card-body">
+							<table id="datatableCustomer" class="table text-nowrap w-100">
+								<thead>
+									<tr>
+										<th>S.No#</th>
+										<th>Table No</th>
+										<th>Chairs</th>
+										<th>Reservation Date</th>
+										<th>Time From</th>
+										<th>Time To</th>
+										<th>Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for reservation in all_tables_reservation_retrieve %}
+										{% if reservation.status == 'Reserved' %}
+										<tr>
+											<td class="align-middle">{{loop.index}}</td>
+											<td style="text-wrap: wrap;">
+												{{reservation.restaurant_tables.table_name}}
+											</td>
+											<td class="align-middle">{{reservation.number_of_chairs}}</td>
+											<td class="text-success">{{ reservation.reservation_date }}</td>
+											<td class="text-success">{{ reservation.time_from }}</td>
+											<td class="text-success">{{ reservation.time_to }}</td>
+											<td>
+												<a class="btn btn-success btn-circle btn-sm">
+													<i class="fa fa-bed"></i> Table Reserved
+												</a>
+											</td>
+										</tr>
+										{% endif %}
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- END #datatable -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Modal for Check For Feedback -->

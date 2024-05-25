@@ -119,6 +119,7 @@ class Order(db.Model):
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     # Define the relationships
     order_items = db.relationship('OrderItem', backref=db.backref('order', lazy=True))
+    customers = db.relationship('Customers', backref=db.backref('order', lazy=True))
 
 
 class OrderItem(db.Model):
@@ -128,6 +129,8 @@ class OrderItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('products.p_id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(precision=20, scale=1), nullable=False)
+    # Define the relationships
+    products = db.relationship('Products', backref=db.backref('order_item', lazy=True))
 
 
 class RestaurantTables(db.Model):
@@ -139,58 +142,16 @@ class RestaurantTables(db.Model):
 
 class TableReservations(db.Model):
     __tablename__ = 'table_reservations'
-    reservation_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
     table_id = db.Column(db.Integer, db.ForeignKey('restaurant_tables.table_id'), nullable=False)
+    number_of_chairs = db.Column(db.Integer, nullable=False)
     reservation_date = db.Column(db.Date, nullable=False)
-    number_of_guests = db.Column(db.Integer, nullable=False)
-    special_requests = db.Column(db.Text)
-    completed = db.Column(db.Integer, default=0)
-    upcoming = db.Column(db.Integer, default=0)
-    in_progress = db.Column(db.Integer, default=0)
+    time_from = db.Column(db.Time, nullable=False)
+    time_to = db.Column(db.Time, nullable=False)
     status = db.Column(db.Enum('Reserved', 'Completed', 'Cancelled', name='reservation_status'), default='Reserved')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # Relationships
     customers = db.relationship('Customers', backref=db.backref('table_reservations', lazy=True))
     restaurant_tables = db.relationship('RestaurantTables', backref=db.backref('table_reservations', lazy=True))
-
-
-class TimeSlots(db.Model):
-    __tablename__ = 'time_slots'
-    time_slot_id = db.Column(db.Integer, primary_key=True)
-    reservation_id = db.Column(db.Integer, db.ForeignKey('table_reservations.reservation_id'), nullable=False)
-    slot_time_08_am = db.Column(db.String(10), default='08:00am', nullable=True)
-    description_08_am = db.Column(db.String(255), nullable=True)
-    slot_time_09_am = db.Column(db.String(10), default='09:00am', nullable=True)
-    description_09_am = db.Column(db.String(255), nullable=True)
-    slot_time_10_am = db.Column(db.String(10), default='10:00am', nullable=True)
-    description_10_am = db.Column(db.String(255), nullable=True)
-    slot_time_11_am = db.Column(db.String(10), default='11:00am', nullable=True)
-    description_11_am = db.Column(db.String(255), nullable=True)
-    slot_time_12_pm = db.Column(db.String(10), default='12:00pm', nullable=True)
-    description_12_pm = db.Column(db.String(255), nullable=True)
-    slot_time_01_pm = db.Column(db.String(10), default='01:00pm', nullable=True)
-    description_01_pm = db.Column(db.String(255), nullable=True)
-    slot_time_02_pm = db.Column(db.String(10), default='02:00pm', nullable=True)
-    description_02_pm = db.Column(db.String(255), nullable=True)
-    slot_time_03_pm = db.Column(db.String(10), default='03:00pm', nullable=True)
-    description_03_pm = db.Column(db.String(255), nullable=True)
-    slot_time_04_pm = db.Column(db.String(10), default='04:00pm', nullable=True)
-    description_04_pm = db.Column(db.String(255), nullable=True)
-    slot_time_05_pm = db.Column(db.String(10), default='05:00pm', nullable=True)
-    description_05_pm = db.Column(db.String(255), nullable=True)
-    slot_time_06_pm = db.Column(db.String(10), default='06:00pm', nullable=True)
-    description_06_pm = db.Column(db.String(255), nullable=True)
-    slot_time_07_pm = db.Column(db.String(10), default='07:00pm', nullable=True)
-    description_07_pm = db.Column(db.String(255), nullable=True)
-    slot_time_08_pm = db.Column(db.String(10), default='08:00pm', nullable=True)
-    description_08_pm = db.Column(db.String(255), nullable=True)
-    slot_time_09_pm = db.Column(db.String(10), default='09:00pm', nullable=True)
-    description_09_pm = db.Column(db.String(255), nullable=True)
-    slot_time_10_pm = db.Column(db.String(10), default='10:00pm', nullable=True)
-    description_10_pm = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # Relationships
-    table_reservations = db.relationship('TableReservations', backref=db.backref('time_slots', lazy=True))

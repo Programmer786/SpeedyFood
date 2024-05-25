@@ -6,21 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="29f79567-5853-4715-830d-2be7d53edefa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/add_categorys_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_categorys_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/add_tables_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_tables_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer_cart_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/customer_cart_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/README" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/8e02c9546ca9_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/92c6848b16b6_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/9900f7cb0171_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/ccf44646e791_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/d519333484bd_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Administrator/add_district.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/add_district.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Administrator/add_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/add_table.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Administrator/add_tables.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/versions/a04d850a11fa_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Customer/_Header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/_Header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Customer/_Layout_Auth.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/_Layout_Auth.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Customer/pos_table_booking.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_table_booking.html" afterDir="false" />
     </list>

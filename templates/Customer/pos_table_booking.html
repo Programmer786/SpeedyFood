@@ -122,10 +122,22 @@
 					<!-- BEGIN pos-content -->
 					<div class="pos-content">
 						<div class="pos-content-container h-100 p-4">
+							<!-- BEGIN Message-Show -->
+							{% with messages = get_flashed_messages(with_categories=true) %}
+								{% if messages %}
+									{% for category, message in messages %}
+										<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+											<strong>{{ category|capitalize }}!</strong> {{ message|capitalize }}.
+											<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+										</div>
+									{% endfor %}
+								{% endif %}
+							{% endwith %}
+							<!-- End Message-Show -->
 							<!-- Start: Available Table -->
 							<div class="d-md-flex align-items-center mb-4">
 								<div class="flex-1">
-									<div class="fs-20px mb-1">Available Table (8/{{tables_count}})</div>
+									<div class="fs-20px mb-1">Available Table (<span id="available-table-count">0</span>/{{tables_count}})</div>
 									<div class="mb-2 mb-md-0 d-flex">
 										<div class="d-flex align-items-center me-3">
 											<i class="fa fa-circle fa-fw text-body text-opacity-25 fs-9px me-1"></i> Completed
@@ -151,102 +163,201 @@
 							<!-- Start: All Tables -->
 							<div class="row gx-4">
 								{% for one_table in all_tables_retrieve %}
-								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-									<a href="#" data-bs-toggle="modal" data-bs-target="#modalPosBooking" data-bs-id="{{one_table.table_id}}" data-bs-name="{{one_table.table_name}}" data-bs-pax="{{one_table.table_pax}}" class="pos-table-booking">
-										<div class="pos-table-booking-container">
-											<div class="pos-table-booking-header">
-												<div class="d-flex align-items-center">
-													<div class="flex-1">
-														<div class="title">Table</div>
-														<div class="no">{{one_table.table_name}}</div>
-														<div class="desc">max {{one_table.table_pax}} pax</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+										<a href="#" data-bs-toggle="modal" data-bs-target="#modalPosBooking" data-bs-id="{{one_table.table_id}}" data-bs-name="{{one_table.table_name}}" data-bs-pax="{{one_table.table_pax}}" class="pos-table-booking">
+											<div class="pos-table-booking-container">
+												<div class="pos-table-booking-header">
+													<div class="d-flex align-items-center">
+														<div class="flex-1">
+															<div class="title">Table</div>
+															<div class="no">{{one_table.table_name}}</div>
+															<div class="desc">max {{one_table.table_pax}} pax</div>
+														</div>
+														{% if one_table.table_id == one_table.table_reservations.table_id %}
+														<div class="text-body text-opacity-25">
+															<i class="far fa-check-circle fa-3x"></i>
+														</div>
+														{% else %}
+														<div class="pe-1 text-primary">
+															<i class="far fa-check-circle fa-3x"></i>
+														</div>
+														{% endif %}
 													</div>
-													<div class="pe-1 text-theme">
-														<i class="far fa-check-circle fa-3x"></i>
-													</div>
+												</div>
+												<div class="pos-table-booking-body">
+													{% if one_table.table_reservations %}
+														{% set reservation_found = False %}
+														{% for reservation in one_table.table_reservations %}
+															{% if reservation.reservation_date == session.filter_date %}
+																{% set reservation_found = True %}
+																<div class="booking">
+																	<div class="time">08:00am</div>
+																	<div class="info">{{ reservation.time_slot.description_08_am or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">09:00am</div>
+																	<div class="info">{{ reservation.time_slot.description_09_am or '-' }}</div>
+																	<div class="status completed"><i class="fa fa-circle"></i></div>
+																</div>
+																<div class="booking">
+																	<div class="time">10:00am</div>
+																	<div class="info">{{ reservation.time_slot.description_10_am or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">11:00am</div>
+																	<div class="info">{{ reservation.time_slot.description_11_am or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking highlight">
+																	<div class="time">12:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_12_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">01:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_01_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">02:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_02_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">03:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_03_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">04:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_04_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">05:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_05_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">06:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_06_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">07:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_07_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">08:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_08_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">09:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_09_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<div class="booking">
+																	<div class="time">10:00pm</div>
+																	<div class="info">{{ reservation.time_slot.description_10_pm or '-' }}</div>
+																	<div class="status"></div>
+																</div>
+																<!-- Repeat for other time slots -->
+															{% endif %}
+														{% endfor %}
+														{% if not reservation_found %}
+															<div class="booking">
+																<div class="time">No reservations</div>
+																<div class="info">-</div>
+																<div class="status"></div>
+															</div>
+														{% endif %}
+													{% else %}
+														<div class="booking">
+															<div class="time">08:00am</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">09:00am</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">10:00am</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">11:00am</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking highlight">
+															<div class="time">12:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">01:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">02:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">03:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">04:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">05:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">06:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">07:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">08:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">09:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+														<div class="booking">
+															<div class="time">10:00pm</div>
+															<div class="info">-</div>
+															<div class="status"></div>
+														</div>
+													{% endif %}
 												</div>
 											</div>
-											<div class="pos-table-booking-body">
-												<div class="booking">
-													<div class="time">08:00am</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">09:00am</div>
-													<div class="info">Reserved by Sean</div>
-													<div class="status completed"><i class="fa fa-circle"></i></div>
-												</div>
-												<div class="booking">
-													<div class="time">10:00am</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">11:00am</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking highlight">
-													<div class="time">12:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">01:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">02:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">03:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">04:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">05:00pm</div>
-													<div class="info">Reserved by Irene Wong (4pax)</div>
-													<div class="status upcoming"><i class="fa fa-circle"></i></div>
-												</div>
-												<div class="booking">
-													<div class="time">06:00pm</div>
-													<div class="info">Reserved by Irene Wong (4pax)</div>
-													<div class="status upcoming"><i class="fa fa-circle"></i></div>
-												</div>
-												<div class="booking">
-													<div class="time">07:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">08:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">09:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-												<div class="booking">
-													<div class="time">10:00pm</div>
-													<div class="info">-</div>
-													<div class="status"></div>
-												</div>
-											</div>
-										</div>
-									</a>
-								</div>
+										</a>
+									</div>
 								{% endfor %}
+
 							</div>
 							<!-- End: All Tables -->
 						</div>
@@ -285,6 +396,7 @@
 								<!-- BEGIN modal-body -->
 								<div class="modal-body">
 									<input type="hidden" class="form-control TableId" name="table_id" readonly>
+									<input type="hidden" class="form-control TablePax" name="table_chair" readonly>
 									<input type="hidden" class="form-control TableDate" name="table_date" readonly>
 									<div class="row">
 										<div class="col-lg-6">
@@ -522,10 +634,12 @@
 		var tableName = modalPosBooking.querySelector('.table_name')
 		var tablePax = modalPosBooking.querySelector('.table_pax')
 		var TableIdInput = modalPosBooking.querySelector('.TableId')
+		var TablePaxInput = modalPosBooking.querySelector('.TablePax')
 
 		tableName.textContent = 'Table ' + table_name
 		tablePax.textContent = 'max ' + table_pax + ' pax '
 		TableIdInput.value = table_id
+		TablePaxInput.value = table_pax
 		})
 	</script>
 	<!--End: JavaScript to handle table timing model -->
@@ -561,6 +675,60 @@
 		});
 	</script>
 	<!--End: initialize the date picker, set today's date and handle the changeDate event -->
+	<script>
+		$(document).ready(function() {
+			// Initialize the date picker
+			$('.input-group.date').datepicker({
+				format: 'dd-mm-yyyy',
+				startDate: '0d'
+			}).datepicker('setDate', new Date()) // Set the date picker to today's date
+			.on('changeDate', function(e) {
+				// Get the selected date
+				var selectedDate = $('#filter-date').val();
+				// Update the TableDate input field in the modal
+				$('.TableDate').val(selectedDate);
+				// Update the modal's title date part
+				$('.table_date').text(selectedDate);
+
+				// Fetch available tables for the selected date
+				fetchAvailableTables(selectedDate);
+			});
+
+			// Set the input field value to today's date
+			var today = new Date();
+			var dd = String(today.getDate()).padStart(2, '0');
+			var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+			var yyyy = today.getFullYear();
+			var todayFormatted = dd + '-' + mm + '-' + yyyy;
+			$('#filter-date').val(todayFormatted);
+
+			// Update the TableDate input field in the modal
+			$('.TableDate').val(todayFormatted);
+			// Update the modal's title date part
+			$('.table_date').text(todayFormatted);
+
+			// Fetch available tables for today's date
+			fetchAvailableTables(todayFormatted);
+		});
+
+		function fetchAvailableTables(date) {
+			$.ajax({
+				url: '/get_available_tables',
+				type: 'GET',
+				data: {
+					date: date
+				},
+				success: function(response) {
+					// Update the available table count
+					$('#available-table-count').text(response.available_tables);
+				},
+				error: function(error) {
+					console.error('Error fetching available tables:', error);
+				}
+			});
+		}
+
+	</script>
 	
 </body>
 </html>
