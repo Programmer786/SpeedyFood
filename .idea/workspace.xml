@@ -4,7 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29f79567-5853-4715-830d-2be7d53edefa" name="Changes" comment="" />
+    <list default="true" id="29f79567-5853-4715-830d-2be7d53edefa" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/order_verification_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/add_tables_controller.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer_cart_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/customer_cart_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Administrator/_Layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/_Layout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Administrator/_Sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Administrator/_Sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Customer/_Header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/_Header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Customer/pos_customer_order.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Manager/page_orders.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Manager/pos_counter_checkout.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Manager/pos_kitchen_order.html" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,16 +48,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.app.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/PycharmProjects/FYP/SpeedyFood",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/FYP/SpeedyFood&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\PycharmProjects\FYP\SpeedyFood" />

@@ -117,6 +117,11 @@ class Order(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.cust_id'), nullable=False)
     total_price = db.Column(db.Numeric(precision=20, scale=1), nullable=False)
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    is_verified = db.Column(db.String(50), default='Waiting', nullable=True)  # e.g., 'Waiting', 'Verification', 'Approved', 'Reject'
+    transaction_no = db.Column(db.String(50), unique=True, nullable=True)
+    cust_drop_address = db.Column(db.String(255), nullable=True)
+    delivery_status = db.Column(db.String(50), nullable=True)  # e.g. 'Want Delivery', 'OnTheWay', 'Deliver'
+    isActive = db.Column(db.Boolean, default=False, nullable=True)
     # Define the relationships
     order_items = db.relationship('OrderItem', backref=db.backref('order', lazy=True))
     customers = db.relationship('Customers', backref=db.backref('order', lazy=True))

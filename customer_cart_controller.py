@@ -362,3 +362,80 @@ def table_reserve_with_time():
             return redirect('/')
     else:
         return render_template('Customer/customer_login.html')
+
+
+@app.route('/submit_transaction/<int:OrderId>', methods=['GET', 'POST'])
+def submit_transaction(OrderId):
+    if 'Cust_Id' in session:
+        try:
+            one_Order = Order.query.get_or_404(OrderId)
+            if request.method == 'POST':
+                get_transaction_no = request.form.get('transaction_no')
+                # Check if required fields are not empty
+                if not get_transaction_no:
+                    flash("Error. Please fill all the required fields", "danger")
+                    return redirect('/')
+
+                one_Order.transaction_no = get_transaction_no
+                one_Order.is_verified = 'Verification'
+                db.session.commit()
+                flash(f"Total Price:{one_Order.total_price} :- Transaction Number Successfully Submitted, Now Waiting For Conformation. Thank You!", "success")
+                return redirect('/')
+            else:
+                return redirect('/')
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Failed to connect to the database. -> Error: {str(e)}", "danger")
+            return redirect('/')
+    else:
+        return render_template('Customer/customer_login.html')
+
+
+@app.route('/submit_delivery_address', methods=['POST'])
+def submit_delivery_address():
+    if 'Cust_Id' in session:
+        try:
+            # Get the order ID from the form data
+            order_id = request.form.get('order_id')
+            if not order_id:
+                flash("Error: Order ID not found", "danger")
+                return redirect('/')
+
+            one_Order = Order.query.get_or_404(order_id)
+
+            if request.method == 'POST':
+                get_cust_drop_address = request.form.get('cust_drop_address')
+                if not get_cust_drop_address:
+                    flash("Error. Please fill all the required fields", "danger")
+                    return redirect('/')
+
+                one_Order.cust_drop_address = get_cust_drop_address
+                db.session.commit()
+                flash("Address Successfully Submitted. Now Waiting For Delivery. Thank You!", "success")
+                return redirect('/')
+            else:
+                return redirect('/')
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error: {str(e)}", "danger")
+            return redirect('/')
+    else:
+        return render_template('Customer/customer_login.html')
+
+
+@app.route('/delivery_received/<int:OrderId>')
+def delivery_received(OrderId):
+    if 'Cust_Id' in session:
+        try:
+            sel_one_delivery = Order.query.get_or_404(OrderId)
+            sel_one_delivery.delivery_status = 'Deliver'
+            db.session.commit()
+            flash("Record Successfully Received", "success")
+            return redirect('/')
+        except Exception as e:
+            # If an error occurs during database connection, display an error message
+            db.session.rollback()
+            flash(f"Error: {str(e)}" "", "danger")
+            return render_template('Customer/customer_login.html')
+    else:
+        return render_template('Customer/customer_login.html')

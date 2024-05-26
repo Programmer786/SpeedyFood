@@ -1,0 +1,105 @@
+{% extends "Administrator/_Layout.html" %}
+
+<!-- BEGIN #Body_of_this_page -->
+{% block body %}
+<h1 class="page-header">
+    Verify Payment <small>This page is exclusively used for Verify Payment & Details ...</small>
+</h1>
+<hr class="mb-4">
+
+
+<div class="card border-theme bg-theme bg-opacity-25 mb-5">
+    <div class="card-header border-theme bg-theme bg-opacity-25 fw-bold small text-body">
+        <a style="font-size: 20px;">VERIFY PAYMENT RECORD</a>
+    </div>
+    <!-- BEGIN #datatable -->
+    <div id="datatable" class="mb-1">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatableDefault2" class="table text-nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>P.Id#</th>
+                            <th>Image</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Delivery Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in all_order_retrieve %}
+                        <tr>
+                            <td colspan="5" class="border border-primary" style="text-align: center;">
+                                <h3 class="text-success">
+                                    Order Total Payment: {{ order.total_price }}
+                                    {% if order.is_verified == 'Verification' %}
+                                    <a class="btn btn-primary btn-lg">
+                                        Transaction No: {{ order.transaction_no }}
+                                    </a>
+                                    <a class="btn btn-warning btn-circle btn-lg" href="{{ url_for('payment_verification_success', O_Id=order.id) }}">
+                                        <i class="fa fa-thumbs-up"></i> Verifying Payment Click Now
+                                    </a>
+                                    {% elif order.is_verified == 'Approved' %}
+                                        <a class="btn btn-primary btn-lg">
+                                            Transaction No: {{ order.transaction_no }}
+                                        </a>
+                                        <a class="btn btn-success btn-circle btn-lg">
+                                            <i class="fa fa-smile"></i> Verified Success 
+                                        </a>
+                                        {% if order.cust_drop_address is none or order.cust_drop_address == '' %}
+                                            <a class="btn btn-dark btn-circle btn-lg">
+                                                <i class="fa fa-shopping-basket"></i> Take Away
+                                            </a>
+                                        {% else %}
+                                            {% if order.delivery_status == 'OnTheWay' %}
+                                                <a class="btn btn-info btn-circle btn-lg">
+                                                    <i class="fa fa-bicycle"></i> {{ order.delivery_status }}
+                                                </a>
+                                            {% elif order.delivery_status == 'Deliver' %}
+                                                <a class="btn btn-info btn-circle btn-lg">
+                                                    <i class="fa fa-flag-checkered"></i> {{ order.delivery_status }}
+                                                </a>
+                                            {% else %}
+                                                <a class="btn btn-warning btn-circle btn-lg" href="{{ url_for('ready_for_delivery', O_Id=order.id) }}">
+                                                    <i class="fa fa-bicycle"></i> Ready For Delivery Click Now
+                                                </a>     
+                                            {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                    <a class="btn btn-danger btn-circle btn-lg">
+                                        <i class="fa fa-frown"></i> Not Payment
+                                    </a>
+                                    {% endif %}
+                                </h3>
+                            </td>
+                        </tr>
+                        {% for orders_item in order.order_items %}
+                            <tr>
+                                <td class="align-middle">{{ loop.index }}</td>
+                                <td style="text-wrap: wrap;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="w-60px h-60px bg-gray-100 d-flex align-items-center justify-content-center">
+                                            <img class="mw-100 mh-100" src="{{ url_for('static', filename='uploaded_files/' + orders_item.products.p_image) }}" alt="Product Picture">
+                                        </div>
+                                        <div class="ms-3">
+                                            <a href="#">{{ orders_item.products.p_name }}</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle" style="text-wrap: wrap;">{{ orders_item.products.p_description }}</td>
+                                <td class="align-middle" style="text-wrap: wrap;">{{ orders_item.products.p_price }}</td>
+                                <td>{{order.delivery_status}}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- END #datatable -->
+</div>
+
+
+{% endblock %}
+<!-- BEGIN #Body_of_this_page -->

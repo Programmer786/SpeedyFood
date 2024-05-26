@@ -25,7 +25,7 @@
 		{% if session.cust_RolName %}
 		<div class="menu-item dropdown">
 			<button type="button" style="float:right;" class="btn btn-outline-primary btn-md d-block fw-500" data-bs-toggle="modal"
-        data-bs-target="#checkForFeedbackModal"> <i class="fa fa-bed"></i> Table Reserve</button>
+        data-bs-target="#checkForReservationModal"> <i class="fa fa-bed"></i> Table Reserve</button>
 		</div>
 		<div class="menu-item dropdown">
 			<button type="button" style="float:right;" class="btn btn-outline-success btn-md d-block fw-500" data-bs-toggle="modal"
@@ -70,7 +70,7 @@
 	<div class="modal-dialog modal-xl modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">All Order Take Away</h5>
+				<h5 class="modal-title">All Order Showing and One Order Total Payment Send To EasyPaisa Account:03XX-XXXXXXX</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
@@ -78,21 +78,70 @@
 				<div id="datatable" class="mb-1" style="width: 100%;">
 					<div class="card">
 						<div class="card-body">
-							<table id="datatableCustomer" class="table text-nowrap w-100">
+							<table id="datatableCustomer21" class="table text-nowrap w-100">
 								<thead>
 									<tr>
 										<th>#</th>
 										<th>Product</th>
 										<th>Description</th>
 										<th>Price</th>
-										<th>Action</th>
 										<th>Status</th>
 									</tr>
 								</thead>
 								<tbody>
 									{% for order in all_order_retrieve %}
 										<tr>
-											<td colspan="6"><h3 style="border: 1px solid blue; text-align: center;">Order: {{loop.index}}</h3></td>
+											<td colspan="5" class="border border-primary" style="text-align: center;">
+												<h3 class="text-success">
+													Order Total Payment: {{ order.total_price }} 
+													{% if order.is_verified == 'Approved' %}
+														{% if order.delivery_status == 'OnTheWay' %}
+														<a class="btn btn-warning btn-circle btn-lg" href="{{url_for('delivery_received', OrderId=order.id)}}">
+															<i class="fa fa-bicycle"></i> Delivery On The Way
+														</a>
+														{% elif order.delivery_status == 'Deliver' %}
+														<a class="btn btn-info btn-circle btn-lg">
+															<i class="fa fa-flag-checkered"></i> Delivered
+														</a>
+														{% else %}
+															<a class="btn btn-success btn-circle btn-lg">
+																<i class="fa fa-shopping-basket"></i> Take Away
+															</a>
+														{% endif %}
+													{% endif %}
+													{% if order.is_verified == 'Waiting' %}
+													<div class="dropdown-center">
+														<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+														  Select Action
+														</button>
+														<ul class="dropdown-menu">
+															<form action="{{url_for('submit_transaction', OrderId=order.id)}}" method="post">
+																<div class="mb-3">
+																	<input type="text" class="form-control" name="transaction_no" placeholder="Transaction No" required />
+																</div>
+																<div class="d-grid gap-2">
+																	<button type="submit" class="btn btn-primary btn-circle btn-md btn-block">
+																		<i class="fa fa-download"></i> Submit
+																	</button>
+																</div>
+															</form>
+														</ul>
+													</div>
+													{% else %}
+													<div class="dropdown-center">
+														<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+														  Select Action
+														</button>
+														<ul class="dropdown-menu">
+															<li><a data-bs-toggle="modal" data-bs-target="#modalPosBooking" class="dropdown-item" style="font-size: 20px;" href="#">Dine In</a></li>
+															<li>
+																<a class="dropdown-item" style="font-size: 20px;" href="#" data-bs-toggle="modal" data-bs-target="#DeliveryModel" data-order-id="{{ order.id }}">Delivery</a>
+															</li>
+														</ul>
+													</div>
+													{% endif %}
+												</h3>
+											</td>
 										</tr>
 										{% for orders_item in order.order_items %}
 											<tr>
@@ -109,41 +158,25 @@
 												</td>
 												<td class="align-middle" style="text-wrap: wrap;">{{ orders_item.products.p_description }}</td>
 												<td class="align-middle" style="text-wrap: wrap;">{{ orders_item.products.p_price }}</td>
-												<td class="align-middle" style="text-wrap: wrap;">
-													{% if orders_item.is_verified == 1 %}
-														<a class="btn btn-success btn-circle btn-sm" href="#">
-															<i class="fa fa-download"></i> Download
-														</a>
-													{% elif not orders_item.transaction_no %}
-														<form action="#" method="post">
-															<input type="text" class="form-control" name="transaction_no" placeholder="Transaction No" required />
-															<button type="submit" class="btn btn-primary btn-circle btn-sm">
-																<i class="fa fa-download"></i> Submit
-															</button>
-														</form>
-													{% else %}
-														<a class="btn btn-warning btn-circle btn-sm" href="#">
-															<i class="fa fa-spinner"></i> Processing
-														</a>
-													{% endif %}
-												</td>
 												<td>
-													{% if orders_item.is_verified == 1 %}
-														{% if orders_item.delivery_status != 'Deliver' %}
-															<a class="btn btn-warning fw-semibold" href="#">
-																<i class="fa fa-recycle"></i> Delivery Pending
-															</a>                                                                                                       
-														{% else %}
-															<a class="btn btn-success fw-semibold" href="#">
-																<i class="fa fa-handshake"></i> Delivery Received
-															</a>
-														{% endif %}
+													{% if order.isActive == 0 and order.is_verified == 'Waiting' %}
+														<a class="btn btn-danger fw-semibold" style="margin-top: 15px;" href="#">
+															<i class="fa fa-recycle"></i> Waiting for Payment
+														</a>                                                                                                       
+													{% elif order.isActive == 0 and order.is_verified == 'Verification' %}
+														<a class="btn btn-warning fw-semibold" style="margin-top: 15px;" href="#">
+															<i class="fa fa-recycle"></i> Processing
+														</a>                                                                                                        
+													{% else %}
+														<a class="btn btn-success fw-semibold" style="margin-top: 15px;" href="#">
+															<i class="fa fa-handshake"></i> Order Ready
+														</a>
 													{% endif %}
 												</td>
 											</tr>
 										{% endfor %}
 										<tr>
-											<td colspan="6"><hr style="border: 3px solid red;"></td>
+											<td colspan="5"><hr style="border: 3px solid red;"></td>
 										</tr>
 									{% endfor %}
 								</tbody>
@@ -162,12 +195,12 @@
 <!-- End Modal for Check For Download -->
 
 
-<!-- Start Modal for Check For Feedback -->
-<div class="modal fade" id="checkForFeedbackModal">
+<!-- Start Modal for Check For Reservation -->
+<div class="modal fade" id="checkForReservationModal">
 	<div class="modal-dialog modal-xl modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Give Feedback About This Product</h5>
+				<h5 class="modal-title">Table Reservation Details</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
@@ -220,4 +253,41 @@
 		</div>
 	</div>
 </div>
-<!-- End Modal for Check For Feedback -->
+<!-- End Modal for Check For Reservation -->
+
+<!-- Delivery Modal -->
+<div class="modal fade" id="DeliveryModel" tabindex="-1" aria-labelledby="DeliveryModelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deliveryForm" method="post" action="{{ url_for('submit_delivery_address') }}">
+                <!-- Hidden input field to store the order ID -->
+                <input type="hidden" name="order_id" id="order_id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeliveryModelLabel">Delivery Drop Off or Update Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="cust_drop_address" placeholder="Your Drop off Address" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript code to set the value of the hidden input field with the order ID
+    document.addEventListener('DOMContentLoaded', function () {
+        var deliveryModal = document.getElementById('DeliveryModel');
+        deliveryModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var orderId = button.getAttribute('data-order-id'); // Extract order ID from data-order-id attribute
+            document.getElementById('order_id').value = orderId; // Set order ID as the value of the hidden input field
+        });
+    });
+</script>
